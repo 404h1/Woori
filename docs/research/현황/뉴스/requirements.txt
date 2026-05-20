@@ -1,0 +1,10 @@
+pandas
+requests
+beautifulsoup4
+openai
+google-generativeai
+matplotlib
+seaborn
+wordcloud
+tqdm
+python-dotenv
