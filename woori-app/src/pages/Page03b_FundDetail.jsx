@@ -9,7 +9,11 @@ export default function Page03b_FundDetail({ onBack, onJoin }) {
     <div className="phone-frame">
       <StatusBar />
       <div className="app-header">
-        <button className="back-btn" onClick={onBack}>〈</button>
+        <button className="back-btn" onClick={onBack} style={{ position: 'absolute', left: 4, zIndex: 100, padding: 12, cursor: 'pointer', background: 'transparent', border: 'none' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
         <h1>안내</h1>
         <button className="right-icon">♡</button>
       </div>

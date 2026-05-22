@@ -3,14 +3,15 @@ import StatusBar from '../components/StatusBar';
 
 export default function Page05_InvestorCheck({ onClose }) {
   const [step, setStep] = useState(0);
-  // step 0: Q1, step 1: Q1답변+Q2, step 2: Q2답변+안내
+  const [ans1, setAns1] = useState('');
+  const [ans2, setAns2] = useState('');
 
   return (
     <div className="phone-frame">
       <StatusBar />
       <div className="app-header">
         <h1>투자자 정보확인</h1>
-        <button onClick={onClose} style={{ position: 'absolute', right: 16, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#333' }}>✕</button>
+        <button onClick={onClose} style={{ position: 'absolute', right: 16, background: 'none', border: 'none', fontSize: 22, cursor: 'pointer', color: '#333', zIndex: 100, padding: 12 }}>✕</button>
       </div>
 
       <div className="scroll-content" style={{ padding: '20px 20px 24px' }}>
@@ -34,7 +35,7 @@ export default function Page05_InvestorCheck({ onClose }) {
               {['아니요', '예'].map(label => (
                 <button
                   key={label}
-                  onClick={() => label === '아니요' && setStep(1)}
+                  onClick={() => { setAns1(label); setStep(1); }}
                   style={{
                     width: '100%', background: '#fff', border: '1px solid #e5e7eb',
                     borderRadius: 10, padding: '14px 16px', fontSize: 15,
@@ -57,7 +58,8 @@ export default function Page05_InvestorCheck({ onClose }) {
                   color: '#aaa', marginBottom: 8,
                   display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                 }}>
-                  {label} <span style={{ color: '#ccc' }}>✓</span>
+                  <span style={{ color: ans1 === label ? '#111' : '#aaa', fontWeight: ans1 === label ? 700 : 400 }}>{label}</span>
+                  <span style={{ color: ans1 === label ? '#1b64da' : '#ccc' }}>✓</span>
                 </div>
               ))}
               <div style={{ textAlign: 'right', fontSize: 13, color: '#aaa', marginTop: 4 }}>자세히 보기 ›</div>
@@ -68,14 +70,14 @@ export default function Page05_InvestorCheck({ onClose }) {
         {/* Q1 선택 응답 */}
         {step >= 1 && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-              <div style={{ background: '#e8effd', borderRadius: '16px 4px 16px 16px', padding: '12px 16px', fontSize: 14, color: '#1b64da', fontWeight: 600 }}>
-                아니요 ✏
+            <div className="animate-chat-appear" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+              <div style={{ background: '#e8effd', borderRadius: '16px 4px 16px 16px', padding: '12px 16px', fontSize: 14, color: '#111', fontWeight: 700 }}>
+                {ans1} <span style={{ color: '#1b64da' }}>✏</span>
               </div>
             </div>
 
             {/* 봇 + Q2 */}
-            <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
+            <div className="animate-chat-appear" style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
               <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#e0f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🤖</div>
               <div style={{ flex: 1 }}>
                 <div style={{ background: '#f8fafc', borderRadius: '4px 16px 16px 16px', padding: '16px' }}>
@@ -87,7 +89,7 @@ export default function Page05_InvestorCheck({ onClose }) {
                       {['아니오', '예'].map(label => (
                         <button
                           key={label}
-                          onClick={() => label === '아니오' && setStep(2)}
+                          onClick={() => { setAns2(label); setStep(2); }}
                           style={{
                             width: '100%', background: '#fff', border: '1px solid #e5e7eb',
                             borderRadius: 10, padding: '14px 16px', fontSize: 15,
@@ -110,7 +112,8 @@ export default function Page05_InvestorCheck({ onClose }) {
                           color: '#aaa', marginBottom: 8,
                           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
                         }}>
-                          {label} <span style={{ color: '#ccc' }}>✓</span>
+                          <span style={{ color: ans2 === label ? '#111' : '#aaa', fontWeight: ans2 === label ? 700 : 400 }}>{label}</span>
+                          <span style={{ color: ans2 === label ? '#1b64da' : '#ccc' }}>✓</span>
                         </div>
                       ))}
                       <div style={{ textAlign: 'right', fontSize: 13, color: '#aaa', marginTop: 4 }}>전문 금융소비자란? ›</div>
@@ -125,9 +128,9 @@ export default function Page05_InvestorCheck({ onClose }) {
         {/* Q2 선택 + 안내 */}
         {step >= 2 && (
           <>
-            <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
-              <div style={{ background: '#e8effd', borderRadius: '16px 4px 16px 16px', padding: '12px 16px', fontSize: 14, color: '#1b64da', fontWeight: 600 }}>
-                아니요 ✏
+            <div className="animate-chat-appear" style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: 20 }}>
+              <div style={{ background: '#e8effd', borderRadius: '16px 4px 16px 16px', padding: '12px 16px', fontSize: 14, color: '#111', fontWeight: 700 }}>
+                {ans2} <span style={{ color: '#1b64da' }}>✏</span>
               </div>
             </div>
 

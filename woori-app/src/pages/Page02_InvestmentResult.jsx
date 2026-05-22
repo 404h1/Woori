@@ -1,12 +1,24 @@
+import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 
-export default function Page02_InvestmentResult({ onNext }) {
+export default function Page02_InvestmentResult({ onNext, onBack }) {
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => {
+    const timer = setTimeout(() => setAnimated(true), 100);
+    return () => clearTimeout(timer);
+  }, []);
+
   const types = ['안정형', '안정\n추구형', '위험\n중립형', '적극\n투자형', '공격\n투자형'];
 
   return (
     <div className="phone-frame">
       <StatusBar />
       <div className="app-header">
+        <button className="back-btn" onClick={onBack} style={{ position: 'absolute', left: 4, zIndex: 100, padding: 12, cursor: 'pointer', background: 'transparent', border: 'none' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
         <h1>투자성향분석 결과</h1>
         <button className="right-icon" style={{ color: '#888', fontSize: 16 }}>↓</button>
       </div>
@@ -36,20 +48,27 @@ export default function Page02_InvestmentResult({ onNext }) {
           <div style={{ fontSize: 12, color: '#888', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 4 }}>
             ↑ 기대수익률
           </div>
-          <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', marginBottom: 12 }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', marginBottom: 12, height: 96 }}>
             {types.map((t, i) => (
               <div key={i} style={{
                 flex: 1,
                 background: i === 4 ? '#dc2626' : '#e5e7eb',
                 borderRadius: 10,
-                height: 40 + i * 14,
+                height: animated ? (40 + i * 14) : 0,
+                transition: 'height 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
                 display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontSize: 11, fontWeight: i === 4 ? 700 : 400,
-                color: i === 4 ? '#fff' : '#555',
-                whiteSpace: 'pre-wrap', textAlign: 'center',
-                lineHeight: 1.3,
+                position: 'relative',
+                overflow: 'hidden'
               }}>
-                {t}
+                <div style={{
+                  fontSize: 11, fontWeight: i === 4 ? 700 : 400,
+                  color: i === 4 ? '#fff' : '#555',
+                  whiteSpace: 'pre-wrap', textAlign: 'center',
+                  lineHeight: 1.3,
+                  flexShrink: 0
+                }}>
+                  {t}
+                </div>
               </div>
             ))}
           </div>

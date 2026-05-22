@@ -16,7 +16,11 @@ export default function Page06_FundJoin({ onBack, onNext }) {
     <div className="phone-frame">
       <StatusBar />
       <div className="app-header">
-        <button className="back-btn" onClick={step === 6 ? () => setStep(3) : onBack}>〈</button>
+        <button className="back-btn" onClick={step === 6 ? () => setStep(3) : onBack} style={{ position: 'absolute', left: 4, zIndex: 100, padding: 12, cursor: 'pointer', background: 'transparent', border: 'none' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
         <h1>펀드 가입하기</h1>
         <div className="right-btns">
           <button onClick={() => setShowConsult(true)}>상담</button>

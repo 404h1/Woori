@@ -13,7 +13,7 @@ const FUNDS = [
   { id: 9, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '한화그린히어로증권자투자신탁(주식)A-e', region: '글로벌', fee: '수수료선취', channel: '온라인', return3m: '+37.84%' },
 ];
 
-export default function Page03_FundList({ onNext, onFundDetail }) {
+export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
   const [selected, setSelected] = useState([]);
 
   const toggleSelect = (fund) => {
@@ -31,7 +31,11 @@ export default function Page03_FundList({ onNext, onFundDetail }) {
     <div className="phone-frame">
       <StatusBar />
       <div className="app-header">
-        <button className="back-btn">〈</button>
+        <button className="back-btn" onClick={onBack} style={{ position: 'absolute', left: 4, zIndex: 100, padding: 12, cursor: 'pointer', background: 'transparent', border: 'none' }}>
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+        </button>
         <h1>수익률 BEST</h1>
         <button className="right-icon">🛍</button>
       </div>
