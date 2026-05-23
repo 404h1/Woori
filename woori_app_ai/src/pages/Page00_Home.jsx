@@ -22,21 +22,23 @@ export default function Page00_Home({ onStart }) {
   }, []);
 
   return (
-    <div className="phone-frame" style={{ background: '#f5f7f9' }}>
-      <StatusBar />
+    <div className="phone-frame" style={{ background: '#f5f7f9', position: 'relative' }}>
+      <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', zIndex: 50 }}>
+        <StatusBar dark />
+      </div>
       
       {/* Home Screen Content */}
       <div className="scroll-content" style={{ padding: 0, paddingBottom: 80 }}>
         
         {/* Top Header / Banner Area */}
         <div style={{ 
-          backgroundColor: '#e8f4fc',
+          backgroundColor: '#bde2ff', // fallback sky color
           backgroundImage: `url(${homeBg})`,
-          backgroundSize: '100% auto',
+          backgroundSize: 'cover',
           backgroundPosition: 'center bottom',
           backgroundRepeat: 'no-repeat',
-          padding: '16px 20px',
-          height: 280,
+          padding: '60px 20px 40px', // 60px to push down past StatusBar
+          height: 360,
           position: 'relative'
         }}>
           {/* Header Icons */}
@@ -60,8 +62,7 @@ export default function Page00_Home({ onStart }) {
 
         </div>
 
-
-        <div style={{ padding: '0 20px', background: '#f5f7f9', minHeight: 400 }}>
+        <div style={{ padding: '0 20px', background: 'transparent', minHeight: 400, marginTop: -60, position: 'relative', zIndex: 10 }}>
           {/* Card 1: Tip */}
           <div style={{ background: '#fff', borderRadius: 16, padding: '20px', marginBottom: 12, boxShadow: '0 2px 10px rgba(0,0,0,0.02)', position: 'relative' }}>
             <span style={{ position: 'absolute', top: 16, right: 16, color: '#aaa', fontSize: 18 }}>✕</span>
