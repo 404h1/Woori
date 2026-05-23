@@ -2,6 +2,13 @@ import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 import homeBg from '../assets/home_bg.png';
 import botImg from '../assets/bot.png';
+import bellIcon from '../assets/bell.svg';
+import menuIcon from '../assets/menu.svg';
+import productIcon from '../assets/product.svg';
+import assetsIcon from '../assets/assets.svg';
+import homeActiveIcon from '../assets/home_active.svg';
+import stocksIcon from '../assets/stocks.svg';
+import benefitsIcon from '../assets/benefits.svg';
 
 export default function Page00_Home({ onStart }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -46,8 +53,8 @@ export default function Page00_Home({ onStart }) {
                 <img src={botImg} alt="bot" style={{ width: 24, height: 24, borderRadius: '50%' }} />
                 <div style={{ position: 'absolute', top: -4, right: -4, width: 6, height: 6, background: '#ff3b30', borderRadius: '50%' }} />
               </div>
-              <span style={{ fontSize: 22, color: '#333' }}>🔔</span>
-              <span style={{ fontSize: 24, color: '#333' }}>≡</span>
+              <img src={bellIcon} alt="bell" style={{ width: 24, height: 24 }} />
+              <img src={menuIcon} alt="menu" style={{ width: 24, height: 24 }} />
             </div>
           </div>
 
@@ -130,23 +137,23 @@ export default function Page00_Home({ onStart }) {
         paddingBottom: 20
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#888' }}>
-          <span style={{ fontSize: 20 }}>🛍️</span>
+          <img src={productIcon} alt="product" style={{ width: 24, height: 24 }} />
           <span style={{ fontSize: 11, fontWeight: 500 }}>상품</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#888' }}>
-          <span style={{ fontSize: 20 }}>📊</span>
+          <img src={assetsIcon} alt="assets" style={{ width: 24, height: 24 }} />
           <span style={{ fontSize: 11, fontWeight: 500 }}>자산·소비</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#111' }}>
-          <span style={{ fontSize: 20, color: '#1b64da' }}>🏠</span>
+          <img src={homeActiveIcon} alt="home" style={{ width: 24, height: 24 }} />
           <span style={{ fontSize: 11, fontWeight: 700 }}>홈</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#888' }}>
-          <span style={{ fontSize: 20 }}>📈</span>
+          <img src={stocksIcon} alt="stocks" style={{ width: 24, height: 24 }} />
           <span style={{ fontSize: 11, fontWeight: 500 }}>주식</span>
         </div>
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 4, color: '#888' }}>
-          <span style={{ fontSize: 20 }}>😊</span>
+          <img src={benefitsIcon} alt="benefits" style={{ width: 24, height: 24 }} />
           <span style={{ fontSize: 11, fontWeight: 500 }}>혜택</span>
         </div>
       </div>

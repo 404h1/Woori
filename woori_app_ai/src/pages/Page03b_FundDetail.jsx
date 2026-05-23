@@ -2,7 +2,7 @@ import StatusBar from '../components/StatusBar';
 import ConsultSheet from '../components/ConsultSheet';
 import { useState } from 'react';
 
-export default function Page03b_FundDetail({ onBack, onJoin }) {
+export default function Page03b_FundDetail({ onBack, onAI, onJoin }) {
   const [showConsult, setShowConsult] = useState(false);
 
   return (
@@ -77,6 +77,18 @@ export default function Page03b_FundDetail({ onBack, onJoin }) {
             <p style={{ fontSize: 12, color: '#555', lineHeight: 1.6 }}>
               이 금융상품은 예금자보호법에 따라 보호되지 않습니다.
             </p>
+          </div>
+
+          {/* AI 설명 배너 */}
+          <div
+            onClick={onAI}
+            style={{ background: 'linear-gradient(135deg,#1b64da,#4f9cf9)', borderRadius: 14, padding: '16px 18px', marginBottom: 20, cursor: 'pointer', display: 'flex', alignItems: 'center', gap: 14 }}
+          >
+            <span style={{ fontSize: 28 }}>🤖</span>
+            <div style={{ flex: 1 }}>
+              <div style={{ fontSize: 13, fontWeight: 700, color: '#fff', marginBottom: 3 }}>내 편인 AI가 이 펀드를 쉽게 설명해 드릴게요</div>
+              <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.75)' }}>장단점 · 고객님 맞춤 투자금액 추천 →</div>
+            </div>
           </div>
 
           <div style={{ fontSize: 18, fontWeight: 700, color: '#111', textAlign: 'center', paddingBottom: 16, borderBottom: '1px solid #f0f2f5' }}>

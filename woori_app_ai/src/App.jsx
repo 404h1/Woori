@@ -7,6 +7,7 @@ import Page01 from './pages/Page01_InvestorInfo';
 import Page02 from './pages/Page02_InvestmentResult';
 import Page03 from './pages/Page03_FundList';
 import Page03b from './pages/Page03b_FundDetail';
+import Page03c from './pages/Page03c_FundAI';
 import Page04 from './pages/Page04_FundCompare';
 import Page05 from './pages/Page05_InvestorCheck';
 import Page06 from './pages/Page06_FundJoin';
@@ -44,6 +45,13 @@ export default function App() {
       {page === '03b' && (
         <Page03b
           onBack={() => go('03')}
+          onAI={() => go('03c')}
+          onJoin={() => go('05')}
+        />
+      )}
+      {page === '03c' && (
+        <Page03c
+          onBack={() => go('03b')}
           onJoin={() => go('05')}
         />
       )}
