@@ -58,37 +58,8 @@ export default function Page00_Home({ onStart }) {
             </div>
           </div>
 
-          {/* Banner Notice */}
-          <div style={{ 
-            background: 'rgba(255, 255, 255, 0.95)', 
-            borderRadius: 16, padding: '16px',
-            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
-          }}>
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-              <span style={{ fontSize: 24 }}>🎁</span>
-              <div>
-                <div style={{ fontSize: 14, fontWeight: 700, color: '#111', marginBottom: 2 }}>첫급여 받으면 100% 당첨 혜택</div>
-                <div style={{ fontSize: 13, color: '#666' }}>지금 확인해보세요!</div>
-              </div>
-            </div>
-            <span style={{ color: '#aaa', fontSize: 18 }}>✕</span>
-          </div>
         </div>
 
-        {/* Account Settings Overlay */}
-        <div style={{ 
-          display: 'flex', justifyContent: 'space-between', alignItems: 'center', 
-          padding: '12px 20px', background: 'linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,1) 100%)',
-          marginTop: -40, position: 'relative', zIndex: 1
-        }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', padding: '6px 12px', borderRadius: 16, fontSize: 13, fontWeight: 600, color: '#555', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            ⚙️ 홈계좌설정
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, background: '#fff', padding: '6px 12px', borderRadius: 16, fontSize: 13, fontWeight: 600, color: '#555', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            잔액숨김 <div style={{ width: 32, height: 18, background: '#ccc', borderRadius: 10, position: 'relative' }}><div style={{ width: 14, height: 14, background: '#fff', borderRadius: '50%', position: 'absolute', top: 2, left: 2 }} /></div>
-          </div>
-        </div>
 
         <div style={{ padding: '0 20px', background: '#f5f7f9', minHeight: 400 }}>
           {/* Card 1: Tip */}
