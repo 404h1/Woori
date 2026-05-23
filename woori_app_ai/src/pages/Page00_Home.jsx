@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
+import homeBg from '../assets/home_bg.png';
 
 export default function Page00_Home({ onStart }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -21,7 +22,10 @@ export default function Page00_Home({ onStart }) {
         
         {/* Top Header / Banner Area */}
         <div style={{ 
-          background: 'linear-gradient(180deg, #e3f2fd 0%, #b3e5fc 100%)', 
+          backgroundImage: `url(${homeBg})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center bottom',
+          backgroundRepeat: 'no-repeat',
           padding: '16px 20px',
           height: 280,
           position: 'relative'
@@ -50,8 +54,7 @@ export default function Page00_Home({ onStart }) {
             background: 'rgba(255, 255, 255, 0.95)', 
             borderRadius: 16, padding: '16px',
             display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
-            marginBottom: 20
+            boxShadow: '0 4px 12px rgba(0,0,0,0.05)'
           }}>
             <div style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
               <span style={{ fontSize: 24 }}>🎁</span>
@@ -61,11 +64,6 @@ export default function Page00_Home({ onStart }) {
               </div>
             </div>
             <span style={{ color: '#aaa', fontSize: 18 }}>✕</span>
-          </div>
-
-          {/* Decorative characters (mock) */}
-          <div style={{ position: 'absolute', bottom: 10, left: 20, right: 20, display: 'flex', justifyContent: 'center', gap: 10, fontSize: 40 }}>
-            🦕 🐥 🐝 🦦
           </div>
         </div>
 
