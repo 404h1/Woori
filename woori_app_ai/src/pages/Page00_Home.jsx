@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 import homeBg from '../assets/home_bg.png';
+import botImg from '../assets/bot.png';
 
 export default function Page00_Home({ onStart }) {
   const [showPopup, setShowPopup] = useState(false);
@@ -42,8 +43,8 @@ export default function Page00_Home({ onStart }) {
             {/* Right Icons */}
             <div style={{ display: 'flex', gap: 16, alignItems: 'center' }}>
               <div style={{ position: 'relative' }}>
-                <span style={{ fontSize: 24 }}>🤖</span>
-                <div style={{ position: 'absolute', top: -8, right: -8, width: 6, height: 6, background: '#ff3b30', borderRadius: '50%' }} />
+                <img src={botImg} alt="bot" style={{ width: 24, height: 24, borderRadius: '50%' }} />
+                <div style={{ position: 'absolute', top: -4, right: -4, width: 6, height: 6, background: '#ff3b30', borderRadius: '50%' }} />
               </div>
               <span style={{ fontSize: 22, color: '#333' }}>🔔</span>
               <span style={{ fontSize: 24, color: '#333' }}>≡</span>
@@ -169,7 +170,9 @@ export default function Page00_Home({ onStart }) {
             >✕</button>
             
             <div style={{ textAlign: 'center', marginBottom: 24 }}>
-              <div style={{ fontSize: 48, marginBottom: 16 }}>🤖✨</div>
+              <div style={{ marginBottom: 16 }}>
+                <img src={botImg} alt="bot" style={{ width: 64, height: 64, borderRadius: '50%' }} />✨
+              </div>
               <div style={{ fontSize: 14, color: '#1b64da', fontWeight: 700, marginBottom: 8 }}>우리은행의 새로운 시도</div>
               <h2 style={{ fontSize: 22, fontWeight: 800, color: '#111', lineHeight: 1.4, margin: 0 }}>
                 'WON AI 뱅커'<br/>서비스를 써보실래요?

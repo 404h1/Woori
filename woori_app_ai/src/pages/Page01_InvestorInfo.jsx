@@ -1,34 +1,10 @@
 import { useState, useEffect, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
 
+import botImg from '../assets/bot.png';
+
 const WibeeBotIcon = () => (
-  <div style={{ width: 44, height: 44, background: '#e1f0ff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 10, flexShrink: 0 }}>
-    <svg width="30" height="30" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-      {/* 안테나 */}
-      <circle cx="28" cy="18" r="6" fill="#1b64da" />
-      <line x1="33" y1="28" x2="29" y2="20" stroke="#1b64da" strokeWidth="5" />
-      <circle cx="72" cy="18" r="6" fill="#1b64da" />
-      <line x1="67" y1="28" x2="71" y2="20" stroke="#1b64da" strokeWidth="5" />
-      {/* 헤드셋 */}
-      <path d="M20 48 C 20 20, 80 20, 80 48" stroke="#1b64da" strokeWidth="8" fill="none" />
-      <rect x="12" y="44" width="12" height="24" rx="6" fill="#111111" />
-      <rect x="76" y="44" width="12" height="24" rx="6" fill="#111111" />
-      {/* 얼굴 */}
-      <circle cx="50" cy="52" r="30" fill="#3b82f6" />
-      <circle cx="50" cy="52" r="26" fill="#93c5fd" />
-      {/* 눈 */}
-      <circle cx="40" cy="48" r="4" fill="#111111" />
-      <circle cx="60" cy="48" r="4" fill="#111111" />
-      {/* 입 */}
-      <path d="M42 58 Q50 66 58 58" stroke="#111111" strokeWidth="4" strokeLinecap="round" fill="none" />
-      {/* 볼 */}
-      <circle cx="34" cy="56" r="3" fill="#f87171" opacity="0.6" />
-      <circle cx="66" cy="56" r="3" fill="#f87171" opacity="0.6" />
-      {/* 마이크 */}
-      <line x1="20" y1="58" x2="30" y2="64" stroke="#111111" strokeWidth="4" />
-      <circle cx="30" cy="64" r="3.5" fill="#111111" />
-    </svg>
-  </div>
+  <img src={botImg} alt="bot" style={{ width: 44, height: 44, borderRadius: '50%', marginBottom: 10, flexShrink: 0 }} />
 );
 
 const PencilIcon = () => (

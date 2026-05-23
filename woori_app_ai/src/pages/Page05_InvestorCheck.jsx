@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
+import botImg from '../assets/bot.png';
 
 export default function Page05_InvestorCheck({ onClose }) {
   const [step, setStep] = useState(0);
@@ -26,7 +27,7 @@ export default function Page05_InvestorCheck({ onClose }) {
       <div className="scroll-content" style={{ padding: '20px 20px 24px' }}>
         {/* 봇 + Q1 */}
         <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-          <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#e0f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🤖</div>
+          <img src={botImg} alt="bot" style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0 }} />
           <div style={{ background: '#f2f4f6', borderRadius: '4px 16px 16px 16px', padding: '14px 16px', fontSize: 14, color: '#222', lineHeight: 1.6 }}>
             이혜원 고객님, 안녕하세요.<br />
             투자 상품에 가입하기 위해 아래 질문에<br />
@@ -87,7 +88,7 @@ export default function Page05_InvestorCheck({ onClose }) {
 
             {/* 봇 + Q2 */}
             <div className="animate-chat-appear" style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#e0f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🤖</div>
+              <img src={botImg} alt="bot" style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0 }} />
               <div style={{ flex: 1 }}>
                 <div style={{ background: '#f8fafc', borderRadius: '4px 16px 16px 16px', padding: '16px' }}>
                   <p style={{ fontSize: 14, color: '#222', lineHeight: 1.7, marginBottom: 14 }}>
@@ -144,7 +145,7 @@ export default function Page05_InvestorCheck({ onClose }) {
             </div>
 
             <div className="animate-chat-appear" style={{ display: 'flex', gap: 12, marginBottom: 24 }}>
-              <div style={{ width: 44, height: 44, borderRadius: '50%', background: '#e0f0ff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 22, flexShrink: 0 }}>🤖</div>
+              <img src={botImg} alt="bot" style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0 }} />
               <div style={{ flex: 1, background: '#f8fafc', borderRadius: '4px 16px 16px 16px', padding: '16px' }}>
                 <p style={{ fontSize: 14, color: '#222', marginBottom: 16 }}>고객님은 현재 일반금융소비자로 등록되어있습니다.</p>
 
