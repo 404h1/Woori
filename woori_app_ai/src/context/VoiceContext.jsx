@@ -1,15 +1,9 @@
-/**
- * VoiceContext — 전역 TTS 상태
- * ✅ 패널 닫혀도 음성 계속
- * ✅ 페이지 이동해도 이어짐
- * ✅ 새 script 시작 시 이전 음성 자동 교체
- */
 import { createContext, useContext, useRef, useState, useCallback } from 'react';
 
 const VoiceCtx = createContext(null);
 
 export function VoiceProvider({ children }) {
-  const [isPlaying, setIsPlaying]         = useState(false);
+  const [isPlaying, setIsPlaying]       = useState(false);
   const [activeWordIdx, setActiveWordIdx] = useState(-1);
   const [currentScript, setCurrentScript] = useState('');
 

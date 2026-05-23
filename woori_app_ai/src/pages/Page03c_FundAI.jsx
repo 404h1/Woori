@@ -1,5 +1,9 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
+
+
+const SCRIPT = '솔직하게 말씀드릴게요. 이 펀드, 엔비디아 TSMC 같은 AI 반도체 기업들에 투자하는 거라 요즘 수익률이 엄청 높아요. 근데 고객님 상황에서 한 가지 짚어드리고 싶은 게 있어요. 지금 비상금이 따로 없으시잖아요. 이 펀드는 중간에 빼면 수수료에 손실까지 날 수 있어요. 그러니까 이렇게 하세요. 25일 급여 들어오면 20만원은 비상금으로 무조건 빼두시고, 나머지 10만원으로 시작해보세요. 처음 투자니까 소액으로 감 잡는 게 맞아요.';
 
 const PROS = [
   { icon: '📈', title: '높은 수익 잠재력', desc: 'AI 반도체 수요 급증으로 최근 3개월 +46% 달성' },
@@ -23,6 +27,7 @@ const FIT = [
 
 export default function Page03c_FundAI({ onBack, onJoin }) {
   const [tab, setTab] = useState('pros');
+  const [showVoice, setShowVoice] = useState(true);
 
   return (
     <div className="phone-frame">
@@ -143,6 +148,19 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
       <div style={{ padding: '12px 20px 24px', background: '#fff', flexShrink: 0 }}>
         <button className="btn-primary" onClick={onJoin}>가입하기</button>
       </div>
+
+      {!showVoice && (
+        <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={(cmd) => {
+            if (cmd.includes('가입') || cmd.includes('시작')) onJoin();
+          }}
+        />
+      )}
     </div>
   );
 }

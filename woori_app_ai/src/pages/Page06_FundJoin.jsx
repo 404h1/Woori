@@ -1,12 +1,16 @@
 import { useState, useRef, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 import ConsultSheet from '../components/ConsultSheet';
+import VoiceGuide from '../components/VoiceGuide';
+
+const SCRIPT = '이제 금액 입력하시면 돼요. 저번에 말씀드렸던 10만원 입력하시면 딱이에요. 아래 +10만 버튼 누르시면 바로 입력돼요.';
 
 export default function Page06_FundJoin({ onBack, onNext }) {
   const [step, setStep] = useState(3); // 03/07 or 06/07
   const [amount, setAmount] = useState('');
   const [showConsult, setShowConsult] = useState(false);
   const [showKeypad, setShowKeypad] = useState(false);
+  const [showVoice, setShowVoice] = useState(true);
 
   const handleNext = () => {
     if (step === 3) setStep(6);
@@ -211,6 +215,17 @@ export default function Page06_FundJoin({ onBack, onNext }) {
       )}
 
       {showConsult && <ConsultSheet onClose={() => setShowConsult(false)} />}
+
+      {!showVoice && !showKeypad && (
+        <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && !showKeypad && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={() => {}}
+        />
+      )}
     </div>
   );
 }

@@ -1,8 +1,12 @@
 import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
+
+const SCRIPT = '결과 나왔어요. 고객님은 공격투자형이에요. 수익이 높은 대신 위험도 있는 상품에 적합한 성향이에요. 아래 확인 누르시면 맞는 펀드 보여드릴게요.';
 
 export default function Page02_InvestmentResult({ onNext, onBack }) {
   const [animated, setAnimated] = useState(false);
+  const [showVoice, setShowVoice] = useState(true);
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(timer);
@@ -100,6 +104,19 @@ export default function Page02_InvestmentResult({ onNext, onBack }) {
       <div style={{ padding: '12px 20px 24px', background: '#fff', flexShrink: 0 }}>
         <button className="btn-primary" onClick={onNext}>확인</button>
       </div>
+
+      {!showVoice && (
+        <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={(cmd) => {
+            if (cmd.includes('확인') || cmd.includes('다음')) onNext();
+          }}
+        />
+      )}
     </div>
   );
 }

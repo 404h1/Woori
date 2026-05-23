@@ -133,3 +133,34 @@ body {
 .animate-chat-appear {
   animation: chat-appear 0.5s cubic-bezier(0.25, 1, 0.5, 1) forwards;
 }
+
+.voice-fab {
+  position: absolute;
+  bottom: 100px;
+  right: 20px;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: #1b64da;
+  color: #fff;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 4px 16px rgba(27,100,218,0.35);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 250;
+}
+
+@keyframes vgSlideUp {
+  from { transform: translateY(100%); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+@keyframes vgSlideDown {
+  from { transform: translateY(0);    opacity: 1; }
+  to   { transform: translateY(100%); opacity: 0; }
+}
+
+.voice-guide-enter { animation: vgSlideUp   0.28s cubic-bezier(0.25,1,0.5,1) forwards; }
+.voice-guide-exit  { animation: vgSlideDown 0.28s cubic-bezier(0.25,1,0.5,1) forwards; }

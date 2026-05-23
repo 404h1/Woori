@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
+
+const SCRIPT = '고객님 상황 잠깐 봤는데요. 이번 달 급여 들어오시면 여유자금이 30만원 정도 생기시거든요. 근데 비상금이 따로 없으시니까, 전부 투자하시면 안 돼요. 이 목록에서 삼성 글로벌 반도체 펀드 한번 보세요. 수익률이 제일 높긴 한데, 제가 먼저 장단점 설명드릴게요.';
 
 const FUNDS = [
   { id: 1, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '미래에셋코어테크증권자투자신탁(주식)A-e', region: '국내', fee: '수수료선취', channel: '온라인', return3m: '+46.27%' },
@@ -15,6 +18,7 @@ const FUNDS = [
 
 export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
   const [selected, setSelected] = useState([]);
+  const [showVoice, setShowVoice] = useState(true);
 
   const toggleSelect = (fund) => {
     setSelected(prev => {
@@ -147,6 +151,20 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
             )}
           </div>
         </div>
+      )}
+
+      {!showVoice && (
+        <button className="voice-fab" style={{ bottom: selected.length > 0 ? 140 : 100 }} onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={(cmd) => {
+            if (cmd.includes('반도체') || cmd.includes('상세')) onFundDetail?.();
+            else if (cmd.includes('비교')) onNext();
+          }}
+        />
       )}
     </div>
   );

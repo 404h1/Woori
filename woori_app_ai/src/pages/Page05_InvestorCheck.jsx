@@ -1,12 +1,16 @@
 import { useState, useEffect, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
 import botImg from '../assets/bot.png';
+
+const SCRIPT = '가입 전에 두 가지만 확인할게요. 어렵지 않아요, 금방 끝나요. 대출받으셨는지, 전문 금융소비자인지 물어볼 거예요. 대부분 아니요 누르시면 돼요.';
 
 export default function Page05_InvestorCheck({ onClose }) {
   const [step, setStep] = useState(0);
   const [ans1, setAns1] = useState('');
   const [ans2, setAns2] = useState('');
-  
+  const [showVoice, setShowVoice] = useState(true);
+
   const bottomRef = useRef(null);
 
   useEffect(() => {
@@ -190,6 +194,17 @@ export default function Page05_InvestorCheck({ onClose }) {
         {/* 스크롤을 맨 아래로 내리기 위한 투명한 앵커 */}
         <div ref={bottomRef} style={{ height: 10 }} />
       </div>
+
+      {!showVoice && (
+        <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={() => {}}
+        />
+      )}
     </div>
   );
 }

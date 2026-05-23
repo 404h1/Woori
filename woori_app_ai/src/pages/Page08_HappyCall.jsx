@@ -1,5 +1,8 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
+
+const SCRIPT = '마지막 단계예요. 8개 질문인데 대부분 예로 답하시면 돼요. 대출 강요 질문만 자발적 의사로 가입함 선택하세요. 다 고르면 아래 다음 버튼 눌러주세요.';
 
 const QUESTIONS = [
   {
@@ -39,6 +42,7 @@ const QUESTIONS = [
 export default function Page08_HappyCall({ onClose, onDone }) {
   const [answered, setAnswered] = useState(false);
   const [answers, setAnswers] = useState(Array(QUESTIONS.length).fill(null));
+  const [showVoice, setShowVoice] = useState(true);
 
   const handleSelect = (qIndex, option) => {
     const newAnswers = [...answers];
@@ -145,6 +149,17 @@ export default function Page08_HappyCall({ onClose, onDone }) {
         <div style={{ padding: '12px 20px 24px', background: '#fff', flexShrink: 0, position: 'absolute', bottom: 0, width: '100%' }}>
           <button className="btn-primary" onClick={onDone}>확인</button>
         </div>
+      )}
+
+      {!answered && !showVoice && (
+        <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {!answered && showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={() => {}}
+        />
       )}
     </div>
   );

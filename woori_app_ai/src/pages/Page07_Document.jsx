@@ -1,8 +1,12 @@
 import { useState, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
+import VoiceGuide from '../components/VoiceGuide';
+
+const SCRIPT = '중요한 서류예요. 끝까지 스크롤 내려서 읽어봐야 확인 버튼이 활성화돼요. 직접 터치해서 확인 버튼 눌러주셔야 해요. 서두르지 않아도 돼요, 천천히 읽으세요.';
 
 export default function Page07_Document({ onClose, onNext }) {
   const [scrolled, setScrolled] = useState(false);
+  const [showVoice, setShowVoice] = useState(true);
   const scrollRef = useRef(null);
 
   const handleScroll = () => {
@@ -93,6 +97,17 @@ export default function Page07_Document({ onClose, onNext }) {
           확인
         </button>
       </div>
+
+      {!showVoice && (
+        <button className="voice-fab" style={{ bottom: 100 }} onClick={() => setShowVoice(true)}>🔊</button>
+      )}
+      {showVoice && (
+        <VoiceGuide
+          script={SCRIPT}
+          onClose={() => setShowVoice(false)}
+          onCommand={() => {}}
+        />
+      )}
     </div>
   );
 }
