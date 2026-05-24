@@ -4,7 +4,7 @@ import ConsultSheet from '../components/ConsultSheet';
 import VoiceGuide from '../components/VoiceGuide';
 import AIWarningDialog from '../components/AIWarningDialog';
 import { getFundById } from '../data/funds';
-import { ACCOUNT, getAvailableBalance } from '../data/account';
+import { ACCOUNT, getAvailableBalance, getNextCardPayment, getMonthlyAutoPayTotal, getDSR, getPrimaryGoalProgress } from '../data/account';
 
 const SCRIPT = '가입할 금액을 입력하는 단계예요. 출금가능금액 안에서, 본인이 잃어도 생활에 지장이 없는 금액만 입력해주세요. 한 번 가입하면 매수예정일에 자동으로 빠져나가요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page06.mp3`;
@@ -145,20 +145,137 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
                 })()}
               </div>
 
-              {/* 장단점 요약 */}
-              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', border: '1px solid #e5e7eb' }}>
+              {/* 이번 달 빠져나갈 돈 — 자동이체 + 카드 결제 */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>이번 달 빠져나갈 돈</span>
+                  <span style={{ fontSize: 10, color: '#1b64da', fontWeight: 700, background: '#eef4ff', padding: '2px 6px', borderRadius: 4 }}>마이데이터</span>
+                </div>
+                {(() => {
+                  const nextCard = getNextCardPayment();
+                  const autoTotal = getMonthlyAutoPayTotal();
+                  const events = [
+                    ...ACCOUNT.autoPayments.map(p => ({ day: p.day, desc: p.desc, amount: p.amount, tag: p.kind })),
+                    ...(nextCard ? [{ day: parseInt(nextCard.date.slice(-2), 10), desc: '신용카드 결제', amount: nextCard.amount, tag: '카드' }] : []),
+                  ].sort((a, b) => a.day - b.day);
+                  const grandTotal = autoTotal + (nextCard?.amount || 0);
+                  return (
+                    <>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginBottom: 10 }}>
+                        {events.map((e, i) => (
+                          <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: 12 }}>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                              <span style={{ display: 'inline-block', minWidth: 28, fontSize: 11, color: '#1b64da', fontWeight: 700, background: '#eef4ff', borderRadius: 4, padding: '2px 5px', textAlign: 'center' }}>{e.day}일</span>
+                              <span style={{ color: '#333' }}>{e.desc}</span>
+                            </div>
+                            <span style={{ color: '#111', fontWeight: 600 }}>{e.amount.toLocaleString()}원</span>
+                          </div>
+                        ))}
+                      </div>
+                      <div style={{ borderTop: '1px solid #f0f2f5', paddingTop: 10, fontSize: 12, color: '#555', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <span>이번 달 고정 지출 합계</span>
+                        <strong style={{ color: '#dc2626', fontSize: 14 }}>{grandTotal.toLocaleString()}원</strong>
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* 부채비율 + 재무 목표 */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>부채비율 & 재무 목표</span>
+                  <span style={{ fontSize: 10, color: '#1b64da', fontWeight: 700, background: '#eef4ff', padding: '2px 6px', borderRadius: 4 }}>마이데이터</span>
+                </div>
+                {(() => {
+                  const dsr = getDSR() * 100;
+                  const dsrStatus = dsr < 30 ? { label: '정상', color: '#16a34a' } : dsr < 40 ? { label: '주의', color: '#f59e0b' } : { label: '위험', color: '#dc2626' };
+                  const goal = getPrimaryGoalProgress();
+                  return (
+                    <>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '6px 0', fontSize: 12, color: '#555' }}>
+                        <span>DSR (월소득 대비 부채상환)</span>
+                        <span style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+                          <strong style={{ color: '#111' }}>{dsr.toFixed(1)}%</strong>
+                          <span style={{ fontSize: 10, fontWeight: 700, color: '#fff', background: dsrStatus.color, padding: '2px 6px', borderRadius: 4 }}>{dsrStatus.label}</span>
+                        </span>
+                      </div>
+                      {goal && (
+                        <div style={{ marginTop: 8, paddingTop: 10, borderTop: '1px solid #f0f2f5' }}>
+                          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#555', marginBottom: 6 }}>
+                            <span>🎯 {goal.title}</span>
+                            <span><strong style={{ color: '#1b64da' }}>{goal.progressPct.toFixed(0)}%</strong> 달성</span>
+                          </div>
+                          <div style={{ height: 6, background: '#f2f4f6', borderRadius: 3, overflow: 'hidden', marginBottom: 6 }}>
+                            <div style={{ width: `${goal.progressPct}%`, height: '100%', background: '#1b64da' }} />
+                          </div>
+                          <div style={{ fontSize: 11, color: '#888', display: 'flex', justifyContent: 'space-between' }}>
+                            <span>{goal.current.toLocaleString()} / {goal.target.toLocaleString()}원</span>
+                            <span>{goal.deadline.slice(0, 7)} 마감 ({goal.monthsRemaining}개월 남음)</span>
+                          </div>
+                        </div>
+                      )}
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* 장점 (간략) */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', border: '1px solid #e5e7eb', marginBottom: 10 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#16a34a', marginBottom: 6 }}>
                   <span>✅</span><span>장점</span>
                 </div>
-                <ul style={{ paddingLeft: 18, margin: '0 0 10px 0', fontSize: 12, color: '#444', lineHeight: 1.7 }}>
+                <ul style={{ paddingLeft: 18, margin: 0, fontSize: 12, color: '#444', lineHeight: 1.7 }}>
                   {fund.pros.slice(0, 3).map((p, i) => <li key={i}>{p.title}</li>)}
                 </ul>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#dc2626', marginBottom: 6 }}>
-                  <span>⚠️</span><span>주의</span>
+              </div>
+
+              {/* 주의 (강조) */}
+              <div style={{ background: '#fef2f2', borderRadius: 10, padding: '14px', border: '2px solid #dc2626', boxShadow: '0 2px 8px rgba(220,38,38,0.12)' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 12 }}>
+                  <span style={{ fontSize: 20 }}>⚠️</span>
+                  <span style={{ fontSize: 15, fontWeight: 800, color: '#dc2626', letterSpacing: '-0.3px' }}>꼭 확인하세요 — 주의사항</span>
                 </div>
-                <ul style={{ paddingLeft: 18, margin: 0, fontSize: 12, color: '#444', lineHeight: 1.7 }}>
-                  {fund.cons.slice(0, 3).map((c, i) => <li key={i}>{c.title}</li>)}
-                </ul>
+
+                {/* 손실 시나리오 박스 */}
+                {numericAmount >= 10000 && (() => {
+                  const loss = Math.round(numericAmount * 0.34);
+                  const after = numericAmount - loss;
+                  return (
+                    <div style={{ background: '#fff', border: '1.5px dashed #dc2626', borderRadius: 8, padding: '12px 14px', marginBottom: 12 }}>
+                      <div style={{ fontSize: 11, fontWeight: 700, color: '#dc2626', marginBottom: 6 }}>📉 손실 시나리오 (역대 최악 -34% 기준)</div>
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                        <div>
+                          <div style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>입력 금액</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: '#111' }}>{numericAmount.toLocaleString()}원</div>
+                        </div>
+                        <span style={{ fontSize: 18, color: '#dc2626', fontWeight: 800 }}>→</span>
+                        <div style={{ textAlign: 'right' }}>
+                          <div style={{ fontSize: 11, color: '#888', marginBottom: 2 }}>최악의 경우</div>
+                          <div style={{ fontSize: 18, fontWeight: 800, color: '#dc2626' }}>{after.toLocaleString()}원</div>
+                          <div style={{ fontSize: 11, color: '#dc2626', fontWeight: 700 }}>-{loss.toLocaleString()}원</div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
+
+                {/* 주의사항 카드 리스트 */}
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
+                  {fund.cons.slice(0, 3).map((c, i) => (
+                    <div key={i} style={{ background: '#fff', borderRadius: 8, padding: '10px 12px', border: '1px solid #fecaca', display: 'flex', gap: 10, alignItems: 'flex-start' }}>
+                      <span style={{ fontSize: 16, flexShrink: 0 }}>{c.icon}</span>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontSize: 13, fontWeight: 700, color: '#dc2626', marginBottom: 2 }}>{c.title}</div>
+                        <div style={{ fontSize: 12, color: '#555', lineHeight: 1.5 }}>{c.desc}</div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                <div style={{ marginTop: 12, padding: '10px 12px', background: '#fff', borderRadius: 8, fontSize: 12, color: '#7f1d1d', lineHeight: 1.6, fontWeight: 600 }}>
+                  💡 이 펀드는 <strong>예금자보호 대상이 아니에요.</strong> 원금 전부 손실 가능성이 있으니 꼭 잃어도 되는 금액만 투자하세요.
+                </div>
               </div>
             </div>
 

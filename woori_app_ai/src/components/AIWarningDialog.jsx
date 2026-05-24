@@ -1,6 +1,13 @@
 import { useState, useEffect, useRef } from 'react';
 import botImg from '../assets/bot.png';
-import { ACCOUNT } from '../data/account';
+import {
+  ACCOUNT,
+  getNextCardPayment,
+  getMonthlyAutoPayTotal,
+  getDSR,
+  getOverspentCategories,
+  getPrimaryGoalProgress,
+} from '../data/account';
 
 /**
  * AI 경고 다이얼로그 — 가입 직전, 사용자 자산/펀드 정보 기반으로 3개 경고를 채팅 형태로 던짐.
@@ -23,25 +30,30 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
   const worstLoss = -34;
   const lossAmount = Math.round(investAmount * (1 + worstLoss / 100));
 
+  const nextCard = getNextCardPayment();
+  const autoPayTotal = getMonthlyAutoPayTotal();
+  const dsrPct = (getDSR() * 100).toFixed(1);
+  const overspent = getOverspentCategories();
+  const goal = getPrimaryGoalProgress();
+  const goalDelayMonths = goal ? Math.ceil((investAmount - lossAmount) / goal.monthlyContribution) : 0;
+
   const warnings = [
     {
       icon: '💧',
-      title: '유동성 경고',
-      message: overFreeFund
-        ? `비상금 ${adv.emergency.toLocaleString()}원 권장인데, 입력하신 ${investAmount.toLocaleString()}원은 권장 투자금(${adv.recommended.toLocaleString()}원)을 초과해요. 이 펀드는 환매까지 3영업일이 걸리고, 3개월 미만 환매 시 수수료 70%가 발생해요.`
-        : `이 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 수수료 70%가 발생해요. 갑자기 돈이 필요해도 즉시 현금화가 어렵습니다.`,
-      question: '예상치 못한 지출이 생겨도 3개월 이상 묶어둘 수 있으세요?',
+      title: '유동성 경고 — 다음 결제 일정',
+      message: `이번 달 자동이체로 ${autoPayTotal.toLocaleString()}원이 빠져나가요 (월세·대출이자·보험·통신비·적금). ${nextCard ? `게다가 ${nextCard.date.slice(5).replace('-', '/')}에 신용카드 ${nextCard.amount.toLocaleString()}원 결제 예정이에요. ` : ''}지금 ${investAmount.toLocaleString()}원을 펀드에 묶으면 통장 잔액이 빠듯해질 수 있어요. 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 수수료 70%예요.`,
+      question: '자동이체·카드 결제 일정 다 빠진 뒤에도 여유가 있으세요?',
     },
     {
       icon: '📉',
-      title: '변동성 시뮬레이션',
-      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원). 마이데이터로 보면 이혜원님 현재 신용대출 잔액이 ${loan.balance.toLocaleString()}원이에요.`,
-      question: '투자 손실과 대출 상환이 겹쳐도 괜찮으시겠어요?',
+      title: '변동성 시뮬레이션 — 재무 목표 영향',
+      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원). ${goal ? `이혜원님이 설정한 "${goal.title}" 목표(${goal.progressPct.toFixed(0)}% 달성, ${goal.deadline.slice(0, 7)} 마감)가 손실 시 약 ${goalDelayMonths}개월 더 늦춰져요.` : ''}`,
+      question: '재무 목표 지연을 감수하고도 진행하시겠어요?',
     },
     {
       icon: '🎯',
-      title: '집중도 경고',
-      message: `월 여유자금 ${freeCash.toLocaleString()}원 중 ${concentrationPct}%를 이 펀드 하나에 넣으시는 거예요. ${fund.region === '글로벌' ? '해외 주식이라 환율 변동까지 추가로 영향을 받아요.' : '한 산업에 집중되면 업황 악화 시 분산 효과가 사라져요.'} 월 대출 상환 ${loan.monthlyPayment.toLocaleString()}원도 있어 실질 여유 폭이 좁아요.`,
+      title: '집중도 경고 — 부채 + 충동지출 신호',
+      message: `월 여유자금 ${freeCash.toLocaleString()}원 중 ${concentrationPct}%를 이 펀드 하나에 넣으시는 거예요. 현재 DSR ${dsrPct}% (월소득 대비 대출상환), 신용대출 ${loan.balance.toLocaleString()}원 상환 중이에요. ${overspent.length > 0 ? `또 이번 달 ${overspent.map(o => `${o.label} +${o.diffPct.toFixed(0)}%`).join(', ')} — 평균 대비 과소비 패턴이 보여요. 충동 결정 아닌지 한 번 더 확인하세요.` : ''}`,
       question: '그래도 이 펀드 하나에 집중해서 진행하시겠어요?',
     },
   ];
