@@ -4,6 +4,7 @@ import ConsultSheet from '../components/ConsultSheet';
 import VoiceGuide from '../components/VoiceGuide';
 import AIWarningDialog from '../components/AIWarningDialog';
 import { getFundById } from '../data/funds';
+import { ACCOUNT, getAvailableBalance } from '../data/account';
 
 const SCRIPT = '가입할 금액을 입력하는 단계예요. 출금가능금액 안에서, 본인이 잃어도 생활에 지장이 없는 금액만 입력해주세요. 한 번 가입하면 매수예정일에 자동으로 빠져나가요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page06.mp3`;
@@ -52,7 +53,7 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
     if (type === '+1만') current += 10000;
     if (type === '+10만') current += 100000;
     if (type === '+100만') current += 1000000;
-    if (type === '전액') current = 300001; // 출금가능금액
+    if (type === '전액') current = getAvailableBalance();
     setAmount(current.toString());
   };
 
@@ -109,25 +110,35 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
               {/* 내 자산 시각화 */}
               <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>내 자산 vs 투자금</span>
+                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>이번 달 월급 흐름</span>
                   <span style={{ fontSize: 10, color: '#1b64da', fontWeight: 700, background: '#eef4ff', padding: '2px 6px', borderRadius: 4 }}>마이데이터 기반</span>
                 </div>
                 {(() => {
-                  const total = fund.customAdvice.emergency + fund.customAdvice.recommended;
-                  const emerPct = (fund.customAdvice.emergency / total * 100).toFixed(1);
-                  const invPct  = (fund.customAdvice.recommended / total * 100).toFixed(1);
+                  const inc = ACCOUNT.monthly.income;
+                  const fix = Object.values(ACCOUNT.monthly.fixedExpenses).reduce((a, b) => a + b, 0);
+                  const vari = Object.values(ACCOUNT.monthly.variableExpenses).reduce((a, b) => a + b, 0);
+                  const sav = ACCOUNT.monthly.savings;
+                  const free = ACCOUNT.monthly.freeCash;
+                  const fixPct  = (fix / inc * 100).toFixed(0);
+                  const variPct = (vari / inc * 100).toFixed(0);
+                  const savPct  = (sav / inc * 100).toFixed(0);
+                  const freePct = (free / inc * 100).toFixed(0);
                   return (
                     <>
-                      <div style={{ display: 'flex', height: 22, borderRadius: 11, overflow: 'hidden', marginBottom: 10, background: '#f2f4f6' }}>
-                        <div style={{ width: `${emerPct}%`, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>비상금</div>
-                        <div style={{ width: `${invPct}%`, background: '#1b64da', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>투자</div>
+                      <div style={{ display: 'flex', height: 20, borderRadius: 10, overflow: 'hidden', marginBottom: 10 }}>
+                        <div style={{ width: `${fixPct}%`, background: '#6b7280' }} title="고정지출" />
+                        <div style={{ width: `${variPct}%`, background: '#f59e0b' }} title="변동지출" />
+                        <div style={{ width: `${savPct}%`, background: '#22c55e' }} title="적금" />
+                        <div style={{ width: `${freePct}%`, background: '#1b64da' }} title="여유자금" />
                       </div>
-                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#555', marginBottom: 10 }}>
-                        <span>비상금 <strong style={{ color: '#16a34a' }}>{fund.customAdvice.emergency.toLocaleString()}원</strong></span>
-                        <span>투자 <strong style={{ color: '#1b64da' }}>{fund.customAdvice.recommended.toLocaleString()}원</strong></span>
+                      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '4px 12px', fontSize: 11, color: '#555', marginBottom: 10 }}>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: '#6b7280', borderRadius: 2, marginRight: 4 }} />고정지출 {fix.toLocaleString()}원</span>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: '#f59e0b', borderRadius: 2, marginRight: 4 }} />변동지출 {vari.toLocaleString()}원</span>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: '#22c55e', borderRadius: 2, marginRight: 4 }} />적금 {sav.toLocaleString()}원</span>
+                        <span><span style={{ display: 'inline-block', width: 8, height: 8, background: '#1b64da', borderRadius: 2, marginRight: 4 }} />여유자금 <strong style={{ color: '#1b64da' }}>{free.toLocaleString()}원</strong></span>
                       </div>
                       <div style={{ borderTop: '1px solid #f0f2f5', paddingTop: 10, fontSize: 12, color: '#555', lineHeight: 1.6 }}>
-                        월 여유자금 <strong>{fund.customAdvice.freeFund.toLocaleString()}원</strong> 중 {fund.customAdvice.emergency.toLocaleString()}원은 비상금으로 남기는 것이 안전해요.
+                        월 수입 <strong>{inc.toLocaleString()}원</strong> 중 여유자금 <strong style={{ color: '#1b64da' }}>{free.toLocaleString()}원</strong>이 투자 가능해요. 비상금 {fund.customAdvice.emergency.toLocaleString()}원은 꼭 남겨두세요.
                       </div>
                     </>
                   );
@@ -162,7 +173,7 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
               </div>
               <span style={{ color: '#888', fontSize: 18 }}>∨</span>
             </div>
-            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 300,001원</div>
+            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 {getAvailableBalance().toLocaleString()}원</div>
 
             {/* 가입금액 */}
             <div 

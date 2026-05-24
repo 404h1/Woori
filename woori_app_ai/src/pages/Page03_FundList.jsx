@@ -2,6 +2,7 @@ import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
 import { FUND_LIST } from '../data/funds';
+import { ACCOUNT, getTotalBalance, getAvailableBalance } from '../data/account';
 
 const SCRIPT = '여기 보이는 펀드는 모두 매우높은위험 등급이에요. 수익률 숫자가 커 보여도, 과거 수익률이 미래를 보장하지는 않아요. 예금자보호 대상이 아니라는 점도 기억하세요. 펀드 이름을 누르면 자세한 내용을 보실 수 있어요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page03.mp3`;
@@ -41,6 +42,32 @@ export default function Page03_FundList({ investorType = '공격투자형', onFu
       </div>
 
       <div className="scroll-content" style={{ paddingBottom: selected.length > 0 ? 120 : 20 }}>
+        {/* 마이데이터 계좌 요약 */}
+        <div style={{ margin: '12px 16px 0', background: 'linear-gradient(135deg, #1b64da 0%, #2d7cf0 100%)', borderRadius: 14, padding: '14px 16px', color: '#fff' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 10 }}>
+            <span style={{ fontSize: 12, fontWeight: 700, opacity: 0.85 }}>마이데이터 — {ACCOUNT.customer.name}님 계좌</span>
+            <span style={{ fontSize: 10, background: 'rgba(255,255,255,0.2)', padding: '2px 7px', borderRadius: 10 }}>실시간</span>
+          </div>
+          <div style={{ display: 'flex', gap: 0 }}>
+            <div style={{ flex: 1, borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 12 }}>
+              <div style={{ fontSize: 10, opacity: 0.75, marginBottom: 2 }}>총 보유 자산</div>
+              <div style={{ fontSize: 16, fontWeight: 800 }}>{getTotalBalance().toLocaleString()}원</div>
+            </div>
+            <div style={{ flex: 1, paddingLeft: 12, borderRight: '1px solid rgba(255,255,255,0.2)', paddingRight: 12 }}>
+              <div style={{ fontSize: 10, opacity: 0.75, marginBottom: 2 }}>이번 달 여유자금</div>
+              <div style={{ fontSize: 16, fontWeight: 800 }}>{ACCOUNT.monthly.freeCash.toLocaleString()}원</div>
+            </div>
+            <div style={{ flex: 1, paddingLeft: 12 }}>
+              <div style={{ fontSize: 10, opacity: 0.75, marginBottom: 2 }}>투자 경험</div>
+              <div style={{ fontSize: 14, fontWeight: 800 }}>{ACCOUNT.customer.investorLevel}</div>
+            </div>
+          </div>
+          <div style={{ marginTop: 10, paddingTop: 10, borderTop: '1px solid rgba(255,255,255,0.2)', fontSize: 11, opacity: 0.8, display: 'flex', justifyContent: 'space-between' }}>
+            <span>WON통장 출금가능 {getAvailableBalance().toLocaleString()}원</span>
+            <span>신용대출 잔액 {ACCOUNT.loans[0].balance.toLocaleString()}원</span>
+          </div>
+        </div>
+
         {/* 투자성향 배너 */}
         <div style={{ padding: '16px 20px', borderBottom: '1px solid #f0f2f5' }}>
           <div style={{ fontSize: 14, color: '#222', lineHeight: 1.6, marginBottom: 6 }}>

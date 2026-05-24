@@ -265,15 +265,5 @@ export function getFundById(id) {
   return FUNDS.find(f => f.id === baseId) || FUNDS[1]; // 기본값: 삼성글로벌반도체
 }
 
-// Page03 목록용 — 원본 9개 ID 유지 (A/C 클래스 구분)
-export const FUND_LIST = [
-  { ...FUNDS[0], id: 1, fee: '수수료선취' },
-  { ...FUNDS[0], id: 2, fee: '수수료미징구', return3m: '+46.27%' },
-  { ...FUNDS[1], id: 3, fee: '수수료선취' },
-  { ...FUNDS[1], id: 4, fee: '수수료미징구', return3m: '+46.47%' },
-  { ...FUNDS[2], id: 5, fee: '수수료선취' },
-  { ...FUNDS[2], id: 6, fee: '수수료미징구', return3m: '+44.12%' },
-  { ...FUNDS[3], id: 7, fee: '계열사·수수료선취' },
-  { ...FUNDS[3], id: 8, fee: '계열사·수수료미징구', return3m: '+38.78%' },
-  { ...FUNDS[4], id: 9, fee: '수수료선취' },
-];
+// Page03 목록용 — 5개 고유 펀드 (A클래스 대표)
+export const FUND_LIST = FUNDS;

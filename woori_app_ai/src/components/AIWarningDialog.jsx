@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import botImg from '../assets/bot.png';
+import { ACCOUNT } from '../data/account';
 
 /**
  * AI 경고 다이얼로그 — 가입 직전, 사용자 자산/펀드 정보 기반으로 3개 경고를 채팅 형태로 던짐.
@@ -13,12 +14,13 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
   const [answers, setAnswers] = useState([]); // ['proceed' | 'rethink', ...]
 
   const adv = fund.customAdvice;
+  const loan = ACCOUNT.loans[0];
+  const freeCash = ACCOUNT.monthly.freeCash;
   const overFreeFund = investAmount > (adv.freeFund - adv.emergency);
-  const concentrationPct = ((investAmount / adv.freeFund) * 100).toFixed(0);
+  const concentrationPct = ((investAmount / freeCash) * 100).toFixed(0);
 
-  // 펀드별 손실 시나리오 (역사적 최악)
   const worstYear = fund.region === '글로벌' ? '2022년 미국 긴축기' : '2022년';
-  const worstLoss = -34; // 시뮬레이션
+  const worstLoss = -34;
   const lossAmount = Math.round(investAmount * (1 + worstLoss / 100));
 
   const warnings = [
@@ -26,20 +28,20 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
       icon: '💧',
       title: '유동성 경고',
       message: overFreeFund
-        ? `이혜원님 비상금은 ${adv.emergency.toLocaleString()}원으로 추천드렸어요. 지금 입력하신 ${investAmount.toLocaleString()}원은 권장 투자금(${adv.recommended.toLocaleString()}원)을 초과해요. 갑자기 의료비·생활비가 필요할 때 이 펀드는 환매까지 3영업일이 걸려요.`
+        ? `비상금 ${adv.emergency.toLocaleString()}원 권장인데, 입력하신 ${investAmount.toLocaleString()}원은 권장 투자금(${adv.recommended.toLocaleString()}원)을 초과해요. 이 펀드는 환매까지 3영업일이 걸리고, 3개월 미만 환매 시 수수료 70%가 발생해요.`
         : `이 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 수수료 70%가 발생해요. 갑자기 돈이 필요해도 즉시 현금화가 어렵습니다.`,
-      question: '예상치 못한 지출이 생겨도 ' + (overFreeFund ? '이 금액을 ' : '') + '3개월 이상 묶어둘 수 있으세요?',
+      question: '예상치 못한 지출이 생겨도 3개월 이상 묶어둘 수 있으세요?',
     },
     {
       icon: '📉',
       title: '변동성 시뮬레이션',
-      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 만약 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원).`,
-      question: '이 손실이 실제로 났을 때 후회하지 않으실 자신 있으세요?',
+      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원). 마이데이터로 보면 이혜원님 현재 신용대출 잔액이 ${loan.balance.toLocaleString()}원이에요.`,
+      question: '투자 손실과 대출 상환이 겹쳐도 괜찮으시겠어요?',
     },
     {
       icon: '🎯',
       title: '집중도 경고',
-      message: `이혜원님 월 여유자금 ${adv.freeFund.toLocaleString()}원 중 ${concentrationPct}%를 이 한 펀드에 넣으시는 거예요. ${fund.region === '글로벌' ? '게다가 해외 주식이라 환율 변동까지 추가로 영향을 받아요.' : '한 산업에 집중되면 그 업황 악화 시 분산 효과가 사라져요.'} 분산 투자를 추천드립니다.`,
+      message: `월 여유자금 ${freeCash.toLocaleString()}원 중 ${concentrationPct}%를 이 펀드 하나에 넣으시는 거예요. ${fund.region === '글로벌' ? '해외 주식이라 환율 변동까지 추가로 영향을 받아요.' : '한 산업에 집중되면 업황 악화 시 분산 효과가 사라져요.'} 월 대출 상환 ${loan.monthlyPayment.toLocaleString()}원도 있어 실질 여유 폭이 좁아요.`,
       question: '그래도 이 펀드 하나에 집중해서 진행하시겠어요?',
     },
   ];
