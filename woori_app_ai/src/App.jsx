@@ -15,12 +15,19 @@ import Page07 from './pages/Page07_Document';
 import Page08 from './pages/Page08_HappyCall';
 import consultingImg from './assets/consulting.png';
 
-// 화면 순서
-// 00(홈/팝업) → 00b(AI챗봇) → 01(설문) → 02(결과) → 03(목록) → 03b(상세) 또는 04(비교) → 05(투자자확인) → 06(가입) → 07(설명서) → 08(해피콜)
+// 00(홈/팝업) → 00b(AI챗봇) → 01(설문) → 02(결과) → 03(목록)
+// → 03b(상세) → 03c(AI설명) → 04(비교) → 05(투자자확인)
+// → 06(가입금액) → 07(설명서) → 08(해피콜)
 
 export default function App() {
   const [page, setPage] = useState('00');
   const [isConsulting, setIsConsulting] = useState(false);
+
+  // 사용자 선택 상태
+  const [investorType, setInvestorType] = useState('공격투자형'); // Page01 설문 결과
+  const [selectedFundId, setSelectedFundId] = useState(3);        // Page03b/c/06용 — 기본 삼성글로벌반도체
+  const [compareFundIds, setCompareFundIds] = useState([]);       // Page04용 [id1, id2]
+  const [investAmount, setInvestAmount] = useState(0);            // Page06 → Page07/08
 
   const go = (p) => setPage(p);
 
@@ -28,22 +35,34 @@ export default function App() {
     <div style={{ position: 'relative', width: 390, height: 844, flexShrink: 0, display: 'flex', flexDirection: 'column' }}>
       {page === '00' && <Page00 onStart={() => go('00b')} />}
       {page === '00b' && (
-        <Page00b 
-          onFundSelect={() => { setIsConsulting(true); go('01'); }} 
-          onBack={() => go('00')} 
+        <Page00b
+          onFundSelect={() => { setIsConsulting(true); go('01'); }}
+          onBack={() => go('00')}
         />
       )}
-      {page === '01' && <Page01 onNext={() => go('02')} />}
-      {page === '02' && <Page02 onNext={() => go('03')} onBack={() => go('01')} />}
+      {page === '01' && (
+        <Page01
+          onNext={(type) => { if (type) setInvestorType(type); go('02'); }}
+        />
+      )}
+      {page === '02' && (
+        <Page02
+          investorType={investorType}
+          onNext={() => go('03')}
+          onBack={() => go('01')}
+        />
+      )}
       {page === '03' && (
         <Page03
-          onNext={() => go('04')}
-          onFundDetail={() => go('03b')}
+          investorType={investorType}
+          onFundDetail={(id) => { setSelectedFundId(id); go('03b'); }}
+          onCompare={(ids) => { setCompareFundIds(ids); go('04'); }}
           onBack={() => go('02')}
         />
       )}
       {page === '03b' && (
         <Page03b
+          fundId={selectedFundId}
           onBack={() => go('03')}
           onAI={() => go('03c')}
           onJoin={() => go('05')}
@@ -51,14 +70,16 @@ export default function App() {
       )}
       {page === '03c' && (
         <Page03c
+          fundId={selectedFundId}
           onBack={() => go('03b')}
           onJoin={() => go('05')}
         />
       )}
       {page === '04' && (
         <Page04
+          fundIds={compareFundIds}
           onBack={() => go('03')}
-          onJoin={() => go('05')}
+          onJoin={(id) => { setSelectedFundId(id); go('05'); }}
         />
       )}
       {page === '05' && (
@@ -68,8 +89,9 @@ export default function App() {
       )}
       {page === '06' && (
         <Page06
+          fundId={selectedFundId}
           onBack={() => go('05')}
-          onNext={() => go('07')}
+          onNext={(amount) => { if (amount) setInvestAmount(amount); go('07'); }}
         />
       )}
       {page === '07' && (
@@ -80,12 +102,13 @@ export default function App() {
       )}
       {page === '08' && (
         <Page08
+          fundId={selectedFundId}
+          investAmount={investAmount}
           onClose={() => go('06')}
           onDone={() => go('01')}
         />
       )}
 
-      {/* Floating Consulting Badge */}
       {isConsulting && page !== '00' && page !== '00b' && (
         <div className="floating-consult-badge" style={{
           position: 'absolute',
@@ -95,7 +118,7 @@ export default function App() {
           animation: 'slideUpFade 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)'
         }}>
           <div style={{ position: 'relative' }}>
-            <button 
+            <button
               onClick={() => setIsConsulting(false)}
               style={{
                 position: 'absolute', top: -6, left: -6, background: '#fff', border: '1px solid #ccc',
@@ -103,11 +126,10 @@ export default function App() {
                 fontSize: 12, color: '#666', cursor: 'pointer', zIndex: 10
               }}
             >×</button>
-            <img src={consultingImg} alt="상담중" style={{ width: 80, height: 'auto', dropShadow: '0 4px 12px rgba(0,0,0,0.1)' }} />
+            <img src={consultingImg} alt="상담중" style={{ width: 80, height: 'auto' }} />
           </div>
         </div>
       )}
     </div>
   );
 }
-

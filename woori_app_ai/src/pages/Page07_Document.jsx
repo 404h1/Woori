@@ -2,7 +2,8 @@ import { useState, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
 
-const SCRIPT = '중요한 서류예요. 끝까지 스크롤 내려서 읽어봐야 확인 버튼이 활성화돼요. 직접 터치해서 확인 버튼 눌러주셔야 해요. 서두르지 않아도 돼요, 천천히 읽으세요.';
+const SCRIPT = '상품설명서예요. 원금 손실 가능성, 환매 조건, 청약철회가 가능한 기간이 적혀 있어요. 끝까지 직접 읽어보셔야 가입이 진행돼요. 시간이 걸려도 천천히 보시고, 이해 안 되는 부분은 상담을 요청하세요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page07.mp3`;
 
 export default function Page07_Document({ onClose, onNext }) {
   const [scrolled, setScrolled] = useState(false);
@@ -68,18 +69,93 @@ export default function Page07_Document({ onClose, onNext }) {
           </p>
         </div>
 
-        {/* 긴 본문 */}
-        {[
-          '[숙려제도 기간안내] 신규 신청일 다음 영업일로부터 2영업일간 숙려기간이 부여되며, 숙려기간 종료 후 1영업일간 청약의사확인*이 진행됩니다.',
-          '[청약철회제도 대상자] 일반금융소비자 중에「모집기간이 있는 고난도 금융투자상품 가입자」에 한함(이 외 해당사항 없음) - 2021년 05월 10일부터 적용',
-          '[청약철회제도 기간안내] 청약의사 확인일(숙려기간 종료 후 1영업일) 다음일 부터 7일간 영업점 방문하여 청약철회 신청서 작성 또는 인터넷뱅킹·스마트뱅킹을 통해 청약철회의 의사를 표시할 수 있습니다.',
-          '[공통유의사항] 수령하신 설명서를 참고하시어 투자에 따르는 위험, 원금손실 가능성 등을 반드시 확인하시기 바랍니다.',
-        ].map((text, i) => (
-          <div key={i} style={{ display: 'flex', gap: 8, marginBottom: 16 }}>
-            <span style={{ color: '#aaa', flexShrink: 0 }}>•</span>
-            <p style={{ fontSize: 13, color: '#555', lineHeight: 1.7 }}>{text}</p>
+        {/* 1. 상품 기본 정보 */}
+        <SectionHeader num="1" title="상품 기본 정보" />
+        <DocTable rows={[
+          ['상품유형', '집합투자증권 (공모형 증권자투자신탁)'],
+          ['투자대상', '국내·해외 주식 (반도체·IT 섹터 집중)'],
+          ['위험등급', '1등급 (매우 높은 위험)'],
+          ['예금자보호', '비보호'],
+          ['모집기간', '상시모집'],
+          ['최저가입금액', '10,000원 이상 1원 단위'],
+        ]} />
+
+        {/* 2. 수수료 및 보수 */}
+        <SectionHeader num="2" title="수수료 및 보수" />
+        <DocTable rows={[
+          ['선취판매수수료', '투자금액의 0.5%'],
+          ['집합투자업자보수', '연 0.65%'],
+          ['판매회사보수', '연 0.50%'],
+          ['수탁회사보수', '연 0.05%'],
+          ['일반사무관리회사보수', '연 0.06%'],
+          ['총보수·비용 합계', '연 1.26% (예상)'],
+          ['환매수수료', '3개월 미만 환매 시 환매대금의 이익금 70%'],
+        ]} />
+
+        {/* 3. 원금 손실 가능성 */}
+        <SectionHeader num="3" title="원금 손실 가능성" />
+        <DocParagraph>
+          본 펀드는 <Red>주식 등 위험자산</Red>에 투자하므로, 시장 상황에 따라 <Red>투자원금의 일부 또는 전부</Red>를 잃을 수 있습니다.
+          특히 본 펀드의 기초자산인 글로벌 반도체 산업은 경기 사이클에 민감하며, 과거 1년 이내 <Red>최대 -34%의 손실</Red>을 기록한 사례가 있습니다.
+          예상 손실 시나리오는 다음과 같습니다.
+        </DocParagraph>
+        <DocTable rows={[
+          ['낙관적 시나리오 (12개월)', '+30% ~ +50%'],
+          ['중립 시나리오 (12개월)', '-10% ~ +20%'],
+          ['비관적 시나리오 (12개월)', '-30% ~ -50%'],
+          ['최악 시나리오 (12개월)', '-50% 이상'],
+        ]} />
+
+        {/* 4. 환매 절차 */}
+        <SectionHeader num="4" title="환매 절차 및 기간" />
+        <DocParagraph>
+          환매 신청 시 <strong>3영업일(T+3)</strong> 후 환매대금이 지급됩니다. 단, 해외 자산이 포함된 경우 <strong>최대 7영업일(T+7)</strong>까지 소요될 수 있습니다.
+          기준가는 환매 신청일 익영업일(T+1) 기준가가 적용됩니다.
+        </DocParagraph>
+
+        {/* 5. 숙려·청약철회 */}
+        <SectionHeader num="5" title="숙려제도 및 청약철회권" />
+        <ul style={{ paddingLeft: 18, margin: '0 0 20px 0', fontSize: 13, color: '#555', lineHeight: 1.8 }}>
+          <li><strong>숙려기간:</strong> 신규 신청일 다음 영업일부터 2영업일</li>
+          <li><strong>청약의사 확인:</strong> 숙려기간 종료 후 1영업일 내 진행</li>
+          <li><strong>청약철회 가능 기간:</strong> 청약의사 확인일 다음일부터 7일</li>
+          <li><strong>청약철회 방법:</strong> 영업점 방문 신청서 작성 또는 우리WON뱅킹</li>
+          <li><strong>대상자:</strong> 일반금융소비자 중 모집기간이 있는 고난도 금융투자상품 가입자에 한함</li>
+        </ul>
+
+        {/* 6. 위법계약해지권 */}
+        <SectionHeader num="6" title="위법계약해지권 안내" />
+        <DocParagraph>
+          금융소비자보호법 제47조에 따라, 판매회사가 <Red>적합성·적정성·설명·불공정영업행위·부당권유 금지 의무</Red> 중 어느 하나라도 위반한 경우,
+          위반 사실을 안 날부터 <strong>1년 이내</strong> 또는 계약 체결일부터 <strong>5년 이내</strong>에 계약 해지를 요구하실 수 있습니다.
+        </DocParagraph>
+
+        {/* 7. 분쟁조정·민원 안내 */}
+        <SectionHeader num="7" title="분쟁조정 및 민원 안내" />
+        <DocTable rows={[
+          ['우리은행 소비자보호부', '02-3701-6974 (영업일 09:00-18:00)'],
+          ['우리은행 고객센터', '1599-0800'],
+          ['금융감독원 분쟁조정', '1332'],
+          ['한국소비자원', '1372'],
+        ]} />
+
+        {/* 8. 부적합 안내 */}
+        <div style={{ background: '#fff5f5', borderRadius: 12, padding: '14px 16px', marginTop: 20, marginBottom: 16, border: '1px solid #fecaca' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginBottom: 6 }}>
+            <span style={{ color: '#dc2626', fontSize: 14 }}>🚨</span>
+            <span style={{ fontSize: 13, fontWeight: 700, color: '#dc2626' }}>부적합 가입 안내</span>
           </div>
-        ))}
+          <p style={{ fontSize: 12, color: '#666', lineHeight: 1.7 }}>
+            본 상품이 고객님의 투자성향에 적합하지 않을 경우, <strong>「적합성 미충족 확인서」</strong>를 작성한 후에만 가입이 가능합니다.
+            가입 후 부적합 사유로 발생한 손실은 원칙적으로 투자자 본인에게 귀속됩니다.
+          </p>
+        </div>
+
+        {/* 9. 마지막 확인 문구 */}
+        <div style={{ marginTop: 24, padding: '16px', background: '#f8fafc', borderRadius: 10, fontSize: 12, color: '#666', lineHeight: 1.7 }}>
+          본 설명서를 끝까지 읽고 충분히 이해하셨다면, 아래 '확인' 버튼을 눌러주세요.
+          이해되지 않는 부분이 있으면 반드시 우리은행 콜센터(1599-0800) 또는 영업점 상담을 요청하시기 바랍니다.
+        </div>
       </div>
 
       {/* 하단 */}
@@ -98,16 +174,76 @@ export default function Page07_Document({ onClose, onNext }) {
         </button>
       </div>
 
+      {!scrolled && (
+        <div style={{
+          position: 'absolute', right: 16, bottom: 160,
+          background: 'rgba(0,0,0,0.7)', color: '#fff',
+          padding: '8px 12px', borderRadius: 20,
+          fontSize: 12, fontWeight: 600,
+          animation: 'fadeIn 0.3s ease-out',
+        }}>
+          ↓ 끝까지 읽으세요
+        </div>
+      )}
+
       {!showVoice && (
         <button className="voice-fab" style={{ bottom: 100 }} onClick={() => setShowVoice(true)}>🔊</button>
       )}
       {showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={() => {}}
         />
       )}
     </div>
   );
+}
+
+// ── 헬퍼 컴포넌트 ───────────────────────────────────────
+function SectionHeader({ num, title }) {
+  return (
+    <div style={{
+      display: 'flex', alignItems: 'center', gap: 8,
+      marginTop: 20, marginBottom: 12,
+      paddingTop: 16, borderTop: '1px solid #f0f2f5',
+    }}>
+      <div style={{
+        width: 22, height: 22, borderRadius: '50%',
+        background: '#1b64da', color: '#fff',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        fontSize: 11, fontWeight: 700,
+      }}>{num}</div>
+      <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>{title}</span>
+    </div>
+  );
+}
+
+function DocTable({ rows }) {
+  return (
+    <div style={{ background: '#f8fafc', borderRadius: 10, padding: '4px 14px', marginBottom: 12 }}>
+      {rows.map(([label, value], i) => (
+        <div key={i} style={{
+          display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start',
+          padding: '10px 0',
+          borderBottom: i < rows.length - 1 ? '1px solid #eef0f3' : 'none',
+          gap: 12,
+        }}>
+          <span style={{ fontSize: 12, color: '#666', flexShrink: 0 }}>{label}</span>
+          <span style={{ fontSize: 12, color: '#111', fontWeight: 600, textAlign: 'right' }}>{value}</span>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function DocParagraph({ children }) {
+  return (
+    <p style={{ fontSize: 13, color: '#444', lineHeight: 1.8, marginBottom: 12 }}>{children}</p>
+  );
+}
+
+function Red({ children }) {
+  return <span style={{ color: '#dc2626', fontWeight: 600 }}>{children}</span>;
 }

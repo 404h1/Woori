@@ -12,7 +12,7 @@ export default function Page00b_AIChat({ onFundSelect, onBack }) {
         <>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: '#111', lineHeight: 1.4, margin: '0 0 16px 0' }}>
             이혜원 고객님, 안녕하세요.<br />
-            우리은행 AI챗봇입니다.
+            우리은행 WON AI 뱅커입니다.
           </h2>
           <p style={{ fontSize: 16, color: '#333', margin: '0 0 16px 0', fontWeight: 600 }}>
             은행 업무에 대해 궁금한 내용을 말씀해 주세요.
@@ -58,7 +58,7 @@ export default function Page00b_AIChat({ onFundSelect, onBack }) {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '12px 16px', background: '#fff' }}>
         <button onClick={onBack} style={{ background: 'none', border: 'none', fontSize: 24, cursor: 'pointer' }}>‹</button>
-        <h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>AI챗봇과 대화중</h1>
+        <h1 style={{ fontSize: 16, fontWeight: 700, margin: 0 }}>WON AI 뱅커와 대화중</h1>
         <div style={{ width: 32, height: 32, background: '#7b61ff', borderRadius: 8, display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#fff', fontSize: 10, fontWeight: 700, textAlign: 'center', lineHeight: 1.1 }}>
           AI<br/>갤러리
         </div>
@@ -111,8 +111,8 @@ export default function Page00b_AIChat({ onFundSelect, onBack }) {
                         <div style={{ fontSize: 40 }}>🏠💰</div>
                       </div>
                       
-                      <button style={{ width: '100%', background: '#1b64da', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700 }}>
-                        AI청약상담원과 상담하기
+                      <button onClick={onFundSelect} style={{ width: '100%', background: '#1b64da', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}>
+                        WON AI 뱅커와 상담하기
                       </button>
                     </div>
                   </div>

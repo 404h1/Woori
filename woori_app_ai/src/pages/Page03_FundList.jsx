@@ -1,22 +1,12 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
+import { FUND_LIST } from '../data/funds';
 
-const SCRIPT = '고객님 상황 잠깐 봤는데요. 이번 달 급여 들어오시면 여유자금이 30만원 정도 생기시거든요. 근데 비상금이 따로 없으시니까, 전부 투자하시면 안 돼요. 이 목록에서 삼성 글로벌 반도체 펀드 한번 보세요. 수익률이 제일 높긴 한데, 제가 먼저 장단점 설명드릴게요.';
+const SCRIPT = '여기 보이는 펀드는 모두 매우높은위험 등급이에요. 수익률 숫자가 커 보여도, 과거 수익률이 미래를 보장하지는 않아요. 예금자보호 대상이 아니라는 점도 기억하세요. 펀드 이름을 누르면 자세한 내용을 보실 수 있어요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page03.mp3`;
 
-const FUNDS = [
-  { id: 1, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '미래에셋코어테크증권자투자신탁(주식)A-e', region: '국내', fee: '수수료선취', channel: '온라인', return3m: '+46.27%' },
-  { id: 2, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '미래에셋코어테크증권자투자신탁(주식)C-e', region: '국내', fee: '수수료미징구', channel: '온라인', return3m: '+46.27%' },
-  { id: 3, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '삼성글로벌반도체증권자투자신탁UH[주식]Ae', region: '글로벌', fee: '수수료선취', channel: '온라인', return3m: '+46.54%' },
-  { id: 4, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '삼성글로벌반도체증권자투자신탁UH[주식]Ce', region: '글로벌', fee: '수수료미징구', channel: '온라인', return3m: '+46.47%' },
-  { id: 5, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '한국투자테크증권자투자신탁1호(주식)A-e', region: '국내', fee: '수수료선취', channel: '온라인', return3m: '+44.35%' },
-  { id: 6, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '한국투자테크증권자투자신탁1호(주식)C-e', region: '국내', fee: '수수료미징구', channel: '온라인', return3m: '+44.12%' },
-  { id: 7, risk: '높은위험', riskClass: 'tag-orange', extra: '원금손실가능', name: '우리삼성그룹증권자투자신탁1호[주식]A-e', region: '국내', fee: '계열사·수수료선취', channel: '온라인', return3m: '+38.83%' },
-  { id: 8, risk: '높은위험', riskClass: 'tag-orange', extra: '원금손실가능', name: '우리삼성그룹증권자투자신탁1호[주식]C-e', region: '국내', fee: '계열사·수수료미징구', channel: '온라인', return3m: '+38.78%' },
-  { id: 9, risk: '매우높은위험', riskClass: 'tag-red', extra: '원금손실가능', name: '한화그린히어로증권자투자신탁(주식)A-e', region: '글로벌', fee: '수수료선취', channel: '온라인', return3m: '+37.84%' },
-];
-
-export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
+export default function Page03_FundList({ investorType = '공격투자형', onFundDetail, onCompare, onBack }) {
   const [selected, setSelected] = useState([]);
   const [showVoice, setShowVoice] = useState(true);
 
@@ -30,6 +20,12 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
   };
 
   const isSelected = (id) => selected.some(f => f.id === id);
+
+  const handleCompare = () => {
+    if (selected.length === 2 && onCompare) {
+      onCompare(selected.map(f => f.id));
+    }
+  };
 
   return (
     <div className="phone-frame">
@@ -48,7 +44,7 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
         {/* 투자성향 배너 */}
         <div style={{ padding: '16px 20px', borderBottom: '1px solid #f0f2f5' }}>
           <div style={{ fontSize: 14, color: '#222', lineHeight: 1.6, marginBottom: 6 }}>
-            고객님의 투자성향은 <strong style={{ color: '#dc2626' }}>공격투자형</strong>입니다.<br />
+            고객님의 투자성향은 <strong style={{ color: '#dc2626' }}>{investorType}</strong>입니다.<br />
             <span style={{ color: '#dc2626', fontWeight: 600 }}>매우높은위험</span> 등급 이하의 상품만 조회됩니다.
           </div>
           <div style={{ fontSize: 12, color: '#888', lineHeight: 1.6 }}>
@@ -57,12 +53,11 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
           </div>
         </div>
 
-        {/* 펀드 목록 */}
         <div style={{ padding: '12px 16px', display: 'flex', flexDirection: 'column', gap: 12 }}>
-          {FUNDS.map(fund => (
+          {FUND_LIST.map(fund => (
             <div
               key={fund.id}
-              onClick={() => fund.id === 3 && onFundDetail && onFundDetail()}
+              onClick={() => onFundDetail && onFundDetail(fund.id)}
               style={{
                 background: '#fff',
                 border: isSelected(fund.id) ? '2px solid #1b64da' : '1.5px solid #e5e7eb',
@@ -104,7 +99,6 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
         </div>
       </div>
 
-      {/* 하단 비교 바 */}
       {selected.length > 0 && (
         <div style={{
           position: 'absolute', bottom: 0, left: 0, right: 0,
@@ -117,7 +111,7 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
             </span>
             {selected.length === 2 && (
               <button
-                onClick={onNext}
+                onClick={handleCompare}
                 style={{
                   background: '#1b64da', color: '#fff', border: 'none',
                   borderRadius: 20, padding: '8px 20px',
@@ -159,10 +153,10 @@ export default function Page03_FundList({ onNext, onFundDetail, onBack }) {
       {showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={(cmd) => {
-            if (cmd.includes('반도체') || cmd.includes('상세')) onFundDetail?.();
-            else if (cmd.includes('비교')) onNext();
+            if (cmd.includes('비교')) handleCompare();
           }}
         />
       )}

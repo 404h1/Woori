@@ -1,1 +1,16 @@
 .env
+
+# TTS 생성 산출물 (재생성 가능, 용량 큼)
+tts/app_outputs/
+tts/app_outputs_v2/
+tts/*.wav
+tts/__pycache__/
+tts/source.m4a
+tts/full_audio.wav
+tts/full_audio_24k.wav
+tts/speakers/
+tts/transcript.md
+
+# 모델 캐시
+*.pt
+*.bin

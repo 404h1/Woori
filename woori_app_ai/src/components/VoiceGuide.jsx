@@ -2,7 +2,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useVoice } from '../context/VoiceContext';
 import botImg from '../assets/bot.png';
 
-export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true }) {
+export default function VoiceGuide({ script, audio, onClose, onCommand, autoPlay = true }) {
   const { isPlaying, activeWordIdx, currentScript, speak, stop, replay } = useVoice();
   const [isListening, setIsListening] = useState(false);
   const [closing, setClosing]         = useState(false);
@@ -16,9 +16,9 @@ export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true
   useEffect(() => {
     if (!autoPlay) return;
     if (thisIsActive && isPlaying) return;
-    const t = setTimeout(() => speak(script), 450);
+    const t = setTimeout(() => speak(script, audio), 450);
     return () => clearTimeout(t);
-  }, [script]);
+  }, [script, audio]);
 
   useEffect(() => {
     if (!thisIsActive || activeWordIdx < 0 || !textBoxRef.current) return;
@@ -77,7 +77,7 @@ export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true
           <img src={botImg} alt="AI" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
         </div>
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 12, fontWeight: 700, color: '#1b64da', marginBottom: 1 }}>내 편인 AI</div>
+          <div style={{ fontSize: 12, fontWeight: 700, color: '#1b64da', marginBottom: 1 }}>WON AI 뱅커</div>
           <div style={{ fontSize: 11, color: '#aaa' }}>
             {isListening     ? '🔴 듣고 있어요...'
              : thisIsPlaying ? '🔵 음성 안내 중...'
@@ -117,9 +117,15 @@ export default function VoiceGuide({ script, onClose, onCommand, autoPlay = true
         <button onClick={handleListen} style={{ flex: 1, padding: '12px', background: isListening ? '#ff3b30' : '#f2f4f6', color: isListening ? '#fff' : '#444', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
           🎙 {isListening ? '듣는 중...' : '질문하기'}
         </button>
-        <button onClick={replay} style={{ flex: 1, padding: '12px', background: '#f2f4f6', color: '#444', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
-          🔁 다시듣기
-        </button>
+        {thisIsPlaying ? (
+          <button onClick={stop} style={{ flex: 1, padding: '12px', background: '#ff3b30', color: '#fff', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            ⏹ 정지
+          </button>
+        ) : (
+          <button onClick={replay} style={{ flex: 1, padding: '12px', background: '#f2f4f6', color: '#444', border: 'none', borderRadius: 12, fontSize: 14, fontWeight: 600, cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 6 }}>
+            🔁 다시듣기
+          </button>
+        )}
       </div>
 
       <style>{`

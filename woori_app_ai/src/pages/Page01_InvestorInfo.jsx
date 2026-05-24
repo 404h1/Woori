@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import StatusBar from '../components/StatusBar';
+import { calculateInvestorType } from '../data/investorScore';
 
 import botImg from '../assets/bot.png';
 
@@ -149,6 +150,7 @@ export default function Page01_InvestorInfo({ onNext }) {
   const [messages, setMessages] = useState([]);
   const [currentStep, setCurrentStep] = useState('Q0'); // Q0, Q0_NOTICE, Q1~Q12, DONE
   const [showModal, setShowModal] = useState(false);
+  const [answers, setAnswers] = useState({}); // { 1: optionIdx, 2: optionIdx, ... }
   const bottomRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -225,6 +227,13 @@ export default function Page01_InvestorInfo({ onNext }) {
     } else {
       const qIdx = parseInt(currentStep.replace('Q', ''), 10) - 1;
       const nextQIdx = qIdx + 1;
+
+      // 답변 인덱스 저장 (Q1~Q12)
+      const currentQ = QUESTIONS[qIdx];
+      const optIdx = currentQ.options.indexOf(option);
+      if (optIdx >= 0) {
+        setAnswers(prev => ({ ...prev, [currentQ.id]: optIdx }));
+      }
 
       if (nextQIdx < QUESTIONS.length) {
         const nextQ = QUESTIONS[nextQIdx];
@@ -614,7 +623,8 @@ export default function Page01_InvestorInfo({ onNext }) {
                 }}
                 onClick={() => {
                   setShowModal(false);
-                  onNext();
+                  const type = calculateInvestorType(answers);
+                  onNext(type);
                 }}
               >
                 확인

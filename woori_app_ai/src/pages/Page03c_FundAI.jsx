@@ -1,33 +1,16 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
+import { getFundById } from '../data/funds';
 
+const SCRIPT = '이 펀드는 엔비디아, TSMC 같은 글로벌 AI 반도체 기업에 투자해요. 최근 3개월 수익률이 +46%라는 건, 같은 폭으로 떨어질 수도 있다는 뜻이에요. 환매수수료가 있어서 중간에 빼면 손실이 생길 수 있고, 해외 주식이라 환율에 따라 추가 손익도 발생해요. 장점, 주의, 적합한 분 탭을 하나씩 읽어보시고 본인에게 맞는지 직접 판단해주세요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page03c.mp3`;
 
-const SCRIPT = '솔직하게 말씀드릴게요. 이 펀드, 엔비디아 TSMC 같은 AI 반도체 기업들에 투자하는 거라 요즘 수익률이 엄청 높아요. 근데 고객님 상황에서 한 가지 짚어드리고 싶은 게 있어요. 지금 비상금이 따로 없으시잖아요. 이 펀드는 중간에 빼면 수수료에 손실까지 날 수 있어요. 그러니까 이렇게 하세요. 25일 급여 들어오면 20만원은 비상금으로 무조건 빼두시고, 나머지 10만원으로 시작해보세요. 처음 투자니까 소액으로 감 잡는 게 맞아요.';
-
-const PROS = [
-  { icon: '📈', title: '높은 수익 잠재력', desc: 'AI 반도체 수요 급증으로 최근 3개월 +46% 달성' },
-  { icon: '🌐', title: '글로벌 분산 투자', desc: '엔비디아·TSMC·삼성전자 등 세계 TOP 기업에 분산' },
-  { icon: '💡', title: '성장 테마 직접 투자', desc: 'AI·데이터센터 핵심 인프라 반도체에 집중 투자' },
-];
-
-const CONS = [
-  { icon: '⚠️', title: '높은 변동성', desc: '반도체 업황에 따라 수익률이 크게 오르내릴 수 있어요' },
-  { icon: '💸', title: '원금 손실 가능', desc: '예금자보호 대상 아님, 투자 원금 일부·전부 손실 가능해요' },
-  { icon: '🔄', title: '환율 리스크', desc: '해외 주식 투자라 환율 변동에 따른 추가 손익이 생겨요' },
-];
-
-const FIT = [
-  { ok: true,  label: '5년 이상 장기 투자 가능하신 분' },
-  { ok: true,  label: '원금 손실을 감수하고 높은 수익을 원하시는 분' },
-  { ok: true,  label: 'AI·반도체 성장에 확신이 있으신 분' },
-  { ok: false, label: '1~2년 내 자금이 필요하신 분' },
-  { ok: false, label: '원금 보장이 필요하신 분' },
-];
-
-export default function Page03c_FundAI({ onBack, onJoin }) {
+export default function Page03c_FundAI({ fundId = 3, onBack, onJoin }) {
   const [tab, setTab] = useState('pros');
   const [showVoice, setShowVoice] = useState(true);
+  const fund = getFundById(fundId);
+  const adv = fund.customAdvice;
 
   return (
     <div className="phone-frame">
@@ -43,10 +26,9 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
 
       <div className="scroll-content" style={{ paddingBottom: 100 }}>
 
-        {/* 펀드명 */}
         <div style={{ padding: '20px 20px 0', background: 'linear-gradient(180deg,#eef4ff 0%,#fff 100%)' }}>
-          <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>삼성글로벌반도체증권자투자신탁UH[주식]Ae</div>
-          <div style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 16 }}>글로벌 반도체 기업 투자하기</div>
+          <div style={{ fontSize: 12, color: '#888', marginBottom: 4 }}>{fund.name}</div>
+          <div style={{ fontSize: 20, fontWeight: 800, color: '#111', marginBottom: 16 }}>{fund.shortName} 투자하기</div>
         </div>
 
         {/* 탭 */}
@@ -68,7 +50,7 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
         <div style={{ padding: '20px' }}>
           {tab === 'pros' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {PROS.map((item, i) => (
+              {fund.pros.map((item, i) => (
                 <div key={i} style={{ background: '#f0f7ff', borderRadius: 14, padding: '16px', display: 'flex', gap: 14 }}>
                   <span style={{ fontSize: 24, flexShrink: 0 }}>{item.icon}</span>
                   <div>
@@ -82,7 +64,7 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
 
           {tab === 'cons' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {CONS.map((item, i) => (
+              {fund.cons.map((item, i) => (
                 <div key={i} style={{ background: '#fff5f5', borderRadius: 14, padding: '16px', display: 'flex', gap: 14 }}>
                   <span style={{ fontSize: 24, flexShrink: 0 }}>{item.icon}</span>
                   <div>
@@ -96,7 +78,7 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
 
           {tab === 'fit' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
-              {FIT.map((item, i) => (
+              {fund.fit.map((item, i) => (
                 <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '14px 16px', background: item.ok ? '#f0fff4' : '#fff5f5', borderRadius: 12 }}>
                   <span style={{ fontSize: 18 }}>{item.ok ? '✅' : '❌'}</span>
                   <span style={{ fontSize: 14, color: '#222', lineHeight: 1.5 }}>{item.label}</span>
@@ -105,18 +87,20 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
             </div>
           )}
 
-          {/* ── 고객 맞춤 조언 카드 ── */}
+          {/* 고객 맞춤 조언 카드 */}
           <div style={{ marginTop: 24, background: '#fff', border: '1.5px solid #1b64da', borderRadius: 16, overflow: 'hidden' }}>
-            <div style={{ background: '#1b64da', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 8 }}>
-              <span style={{ fontSize: 16 }}>💬</span>
-              <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>이혜원 고객님 맞춤 조언</span>
+            <div style={{ background: '#1b64da', padding: '12px 16px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+                <span style={{ fontSize: 16 }}>💬</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>이혜원 고객님 맞춤 조언</span>
+              </div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>마이데이터 연동 · 최근 6개월 거래 내역 기반 분석</div>
             </div>
 
             <div style={{ padding: '16px' }}>
-              {/* 자금 분석 */}
               {[
-                { label: '월 여유자금', value: '300,000원', color: '#111' },
-                { label: '권장 비상금', value: '- 200,000원', color: '#dc2626' },
+                { label: '월 여유자금', value: `${adv.freeFund.toLocaleString()}원`, color: '#111' },
+                { label: '권장 비상금', value: `- ${adv.emergency.toLocaleString()}원`, color: '#dc2626' },
               ].map(({ label, value, color }) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f2f5' }}>
                   <span style={{ fontSize: 14, color: '#666' }}>{label}</span>
@@ -125,12 +109,12 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
               ))}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', marginBottom: 12 }}>
                 <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>추천 투자금액</span>
-                <span style={{ fontSize: 15, fontWeight: 800, color: '#1b64da' }}>100,000원 ✅</span>
+                <span style={{ fontSize: 15, fontWeight: 800, color: '#1b64da' }}>{adv.recommended.toLocaleString()}원 ✅</span>
               </div>
 
               <div style={{ background: '#f0f7ff', borderRadius: 10, padding: '12px 14px', marginBottom: 16 }}>
                 <p style={{ fontSize: 13, color: '#1b64da', lineHeight: 1.7, margin: 0 }}>
-                  "처음 투자니까 소액으로 감 잡는 게 맞아요. 25일 급여 들어오시면 비상금 20만원 먼저 빼두시고, 나머지 10만원으로 시작해보세요."
+                  "{adv.message}"
                 </p>
               </div>
 
@@ -138,7 +122,7 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
                 onClick={onJoin}
                 style={{ width: '100%', background: '#1b64da', color: '#fff', border: 'none', borderRadius: 12, padding: '14px', fontSize: 15, fontWeight: 700, cursor: 'pointer' }}
               >
-                10만원으로 바로 가입하기
+                {adv.cta}
               </button>
             </div>
           </div>
@@ -155,6 +139,7 @@ export default function Page03c_FundAI({ onBack, onJoin }) {
       {showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={(cmd) => {
             if (cmd.includes('가입') || cmd.includes('시작')) onJoin();

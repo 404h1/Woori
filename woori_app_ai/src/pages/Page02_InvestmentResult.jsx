@@ -1,12 +1,23 @@
 import { useState, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
+import { TYPE_DESCRIPTIONS } from '../data/investorScore';
 
-const SCRIPT = '결과 나왔어요. 고객님은 공격투자형이에요. 수익이 높은 대신 위험도 있는 상품에 적합한 성향이에요. 아래 확인 누르시면 맞는 펀드 보여드릴게요.';
+const SCRIPT = '결과가 나왔어요. 본인 투자성향이 어떻게 나왔는지, 그리고 그 뜻이 무엇인지 한 번 더 확인해보세요. 성향과 맞지 않는 상품에 가입하면 금융소비자보호법에 따라 부적합 안내가 나갈 수 있어요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page02.mp3`;
 
-export default function Page02_InvestmentResult({ onNext, onBack }) {
+const TYPE_COLORS = {
+  '안정형':     { bar: '#22c55e', text: '#16a34a', highlight: 0 },
+  '안정추구형': { bar: '#84cc16', text: '#65a30d', highlight: 1 },
+  '위험중립형': { bar: '#eab308', text: '#ca8a04', highlight: 2 },
+  '적극투자형': { bar: '#f97316', text: '#ea580c', highlight: 3 },
+  '공격투자형': { bar: '#dc2626', text: '#dc2626', highlight: 4 },
+};
+
+export default function Page02_InvestmentResult({ investorType = '공격투자형', onNext, onBack }) {
   const [animated, setAnimated] = useState(false);
   const [showVoice, setShowVoice] = useState(true);
+  const colors = TYPE_COLORS[investorType] || TYPE_COLORS['공격투자형'];
   useEffect(() => {
     const timer = setTimeout(() => setAnimated(true), 100);
     return () => clearTimeout(timer);
@@ -30,7 +41,7 @@ export default function Page02_InvestmentResult({ onNext, onBack }) {
       <div className="scroll-content" style={{ padding: '28px 20px 100px' }}>
         <div style={{ fontSize: 26, fontWeight: 700, color: '#111', lineHeight: 1.35, marginBottom: 16 }}>
           이혜원님의 투자성향은<br />
-          <span style={{ color: '#dc2626' }}>공격투자형</span>입니다.
+          <span style={{ color: colors.text }}>{investorType}</span>입니다.
         </div>
 
         <div style={{ fontSize: 13, color: '#888', marginBottom: 20 }}>
@@ -38,10 +49,7 @@ export default function Page02_InvestmentResult({ onNext, onBack }) {
         </div>
 
         <div style={{ fontSize: 14, color: '#444', lineHeight: 1.7, marginBottom: 32 }}>
-          시장평균 수익률을 훨씬 넘어서는 높은 수준의 투자수익을
-          추구하며, 이를 위해 자산가치의 변동에 따른 손실 위험을
-          적극 수용, 투자자금 대부분을 주식, 주식형펀드 또는 파생
-          상품 등의 위험자산에 투자할 의향이 있음
+          {TYPE_DESCRIPTIONS[investorType]}
         </div>
 
         {/* 투자성향 차트 */}
@@ -53,28 +61,31 @@ export default function Page02_InvestmentResult({ onNext, onBack }) {
             ↑ 기대수익률
           </div>
           <div style={{ display: 'flex', gap: 6, alignItems: 'flex-end', marginBottom: 12, height: 96 }}>
-            {types.map((t, i) => (
-              <div key={i} style={{
-                flex: 1,
-                background: i === 4 ? '#dc2626' : '#e5e7eb',
-                borderRadius: 10,
-                height: animated ? (40 + i * 14) : 0,
-                transition: 'height 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
-                display: 'flex', alignItems: 'center', justifyContent: 'center',
-                position: 'relative',
-                overflow: 'hidden'
-              }}>
-                <div style={{
-                  fontSize: 11, fontWeight: i === 4 ? 700 : 400,
-                  color: i === 4 ? '#fff' : '#555',
-                  whiteSpace: 'pre-wrap', textAlign: 'center',
-                  lineHeight: 1.3,
-                  flexShrink: 0
+            {types.map((t, i) => {
+              const isMine = i === colors.highlight;
+              return (
+                <div key={i} style={{
+                  flex: 1,
+                  background: isMine ? colors.bar : '#e5e7eb',
+                  borderRadius: 10,
+                  height: animated ? (40 + i * 14) : 0,
+                  transition: 'height 0.8s cubic-bezier(0.25, 1, 0.5, 1)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  position: 'relative',
+                  overflow: 'hidden'
                 }}>
-                  {t}
+                  <div style={{
+                    fontSize: 11, fontWeight: isMine ? 700 : 400,
+                    color: isMine ? '#fff' : '#555',
+                    whiteSpace: 'pre-wrap', textAlign: 'center',
+                    lineHeight: 1.3,
+                    flexShrink: 0
+                  }}>
+                    {t}
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
           <div style={{ fontSize: 12, color: '#888', textAlign: 'right' }}>위험도 →</div>
         </div>
@@ -111,6 +122,7 @@ export default function Page02_InvestmentResult({ onNext, onBack }) {
       {showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={(cmd) => {
             if (cmd.includes('확인') || cmd.includes('다음')) onNext();

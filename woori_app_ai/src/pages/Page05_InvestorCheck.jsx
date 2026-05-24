@@ -3,7 +3,8 @@ import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
 import botImg from '../assets/bot.png';
 
-const SCRIPT = '가입 전에 두 가지만 확인할게요. 어렵지 않아요, 금방 끝나요. 대출받으셨는지, 전문 금융소비자인지 물어볼 거예요. 대부분 아니요 누르시면 돼요.';
+const SCRIPT = '가입 전 두 가지를 확인하는 단계예요. 첫 번째는 최근 1개월 안에 대출을 받으셨거나 받을 예정인지, 두 번째는 증권사에서 확인받은 전문 금융소비자인지 묻는 거예요. 본인 상황을 떠올려보시고 직접 답해주세요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page05.mp3`;
 
 export default function Page05_InvestorCheck({ onClose }) {
   const [step, setStep] = useState(0);
@@ -201,6 +202,7 @@ export default function Page05_InvestorCheck({ onClose }) {
       {showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={() => {}}
         />

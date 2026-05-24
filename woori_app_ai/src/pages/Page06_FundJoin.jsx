@@ -2,19 +2,36 @@ import { useState, useRef, useEffect } from 'react';
 import StatusBar from '../components/StatusBar';
 import ConsultSheet from '../components/ConsultSheet';
 import VoiceGuide from '../components/VoiceGuide';
+import AIWarningDialog from '../components/AIWarningDialog';
+import { getFundById } from '../data/funds';
 
-const SCRIPT = '이제 금액 입력하시면 돼요. 저번에 말씀드렸던 10만원 입력하시면 딱이에요. 아래 +10만 버튼 누르시면 바로 입력돼요.';
+const SCRIPT = '가입할 금액을 입력하는 단계예요. 출금가능금액 안에서, 본인이 잃어도 생활에 지장이 없는 금액만 입력해주세요. 한 번 가입하면 매수예정일에 자동으로 빠져나가요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page06.mp3`;
 
-export default function Page06_FundJoin({ onBack, onNext }) {
+export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
   const [step, setStep] = useState(3); // 03/07 or 06/07
   const [amount, setAmount] = useState('');
   const [showConsult, setShowConsult] = useState(false);
   const [showKeypad, setShowKeypad] = useState(false);
   const [showVoice, setShowVoice] = useState(true);
+  const [showAIWarning, setShowAIWarning] = useState(false);
+
+  const fund = getFundById(fundId);
+  const numericAmount = parseInt(amount || '0', 10);
 
   const handleNext = () => {
     if (step === 3) setStep(6);
-    else onNext();
+    else setShowAIWarning(true); // 최종 가입하기 → AI 경고 모달
+  };
+
+  const handleAIConfirm = () => {
+    setShowAIWarning(false);
+    onNext?.(numericAmount);
+  };
+
+  const handleAICancel = () => {
+    setShowAIWarning(false);
+    onBack?.(); // 다시 생각 → 펀드 목록으로
   };
 
   const handleKeyPress = (key) => {
@@ -35,7 +52,7 @@ export default function Page06_FundJoin({ onBack, onNext }) {
     if (type === '+1만') current += 10000;
     if (type === '+10만') current += 100000;
     if (type === '+100만') current += 1000000;
-    if (type === '전액') current = 10001; // 출금가능금액
+    if (type === '전액') current = 300001; // 출금가능금액
     setAmount(current.toString());
   };
 
@@ -63,8 +80,75 @@ export default function Page06_FundJoin({ onBack, onNext }) {
 
         {step === 3 ? (
           <>
-            <div style={{ fontSize: 24, fontWeight: 800, color: '#111', marginBottom: 28, lineHeight: 1.35 }}>
+            <div style={{ fontSize: 24, fontWeight: 800, color: '#111', marginBottom: 20, lineHeight: 1.35 }}>
               가입정보를<br />입력해주세요
+            </div>
+
+            {/* 가입 직전 최종 점검 카드 */}
+            <div style={{ border: '1.5px solid #1b64da', borderRadius: 14, padding: '16px', marginBottom: 24, background: 'linear-gradient(180deg, #f0f7ff 0%, #fff 70%)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 14 }}>
+                <span style={{ fontSize: 16 }}>🔍</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#1b64da' }}>가입 전 최종 점검</span>
+              </div>
+
+              {/* 펀드 요약 */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', gap: 6, marginBottom: 8 }}>
+                  <span className={`tag ${fund.riskClass}`}>{fund.risk}</span>
+                  <span className="tag tag-pink">{fund.extra}</span>
+                </div>
+                <div style={{ fontSize: 13, fontWeight: 700, color: '#111', marginBottom: 6, lineHeight: 1.4 }}>
+                  {fund.name}
+                </div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 12, color: '#666' }}>
+                  <span>3개월 수익률</span>
+                  <span style={{ color: '#dc2626', fontWeight: 700 }}>{fund.return3m}</span>
+                </div>
+              </div>
+
+              {/* 내 자산 시각화 */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
+                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>내 자산 vs 투자금</span>
+                  <span style={{ fontSize: 10, color: '#1b64da', fontWeight: 700, background: '#eef4ff', padding: '2px 6px', borderRadius: 4 }}>마이데이터 기반</span>
+                </div>
+                {(() => {
+                  const total = fund.customAdvice.emergency + fund.customAdvice.recommended;
+                  const emerPct = (fund.customAdvice.emergency / total * 100).toFixed(1);
+                  const invPct  = (fund.customAdvice.recommended / total * 100).toFixed(1);
+                  return (
+                    <>
+                      <div style={{ display: 'flex', height: 22, borderRadius: 11, overflow: 'hidden', marginBottom: 10, background: '#f2f4f6' }}>
+                        <div style={{ width: `${emerPct}%`, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>비상금</div>
+                        <div style={{ width: `${invPct}%`, background: '#1b64da', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>투자</div>
+                      </div>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#555', marginBottom: 10 }}>
+                        <span>비상금 <strong style={{ color: '#16a34a' }}>{fund.customAdvice.emergency.toLocaleString()}원</strong></span>
+                        <span>투자 <strong style={{ color: '#1b64da' }}>{fund.customAdvice.recommended.toLocaleString()}원</strong></span>
+                      </div>
+                      <div style={{ borderTop: '1px solid #f0f2f5', paddingTop: 10, fontSize: 12, color: '#555', lineHeight: 1.6 }}>
+                        월 여유자금 <strong>{fund.customAdvice.freeFund.toLocaleString()}원</strong> 중 {fund.customAdvice.emergency.toLocaleString()}원은 비상금으로 남기는 것이 안전해요.
+                      </div>
+                    </>
+                  );
+                })()}
+              </div>
+
+              {/* 장단점 요약 */}
+              <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', border: '1px solid #e5e7eb' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#16a34a', marginBottom: 6 }}>
+                  <span>✅</span><span>장점</span>
+                </div>
+                <ul style={{ paddingLeft: 18, margin: '0 0 10px 0', fontSize: 12, color: '#444', lineHeight: 1.7 }}>
+                  {fund.pros.slice(0, 3).map((p, i) => <li key={i}>{p.title}</li>)}
+                </ul>
+                <div style={{ display: 'flex', alignItems: 'center', gap: 4, fontSize: 12, fontWeight: 700, color: '#dc2626', marginBottom: 6 }}>
+                  <span>⚠️</span><span>주의</span>
+                </div>
+                <ul style={{ paddingLeft: 18, margin: 0, fontSize: 12, color: '#444', lineHeight: 1.7 }}>
+                  {fund.cons.slice(0, 3).map((c, i) => <li key={i}>{c.title}</li>)}
+                </ul>
+              </div>
             </div>
 
             {/* 출금 통장 */}
@@ -78,7 +162,7 @@ export default function Page06_FundJoin({ onBack, onNext }) {
               </div>
               <span style={{ color: '#888', fontSize: 18 }}>∨</span>
             </div>
-            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 10,001원</div>
+            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 300,001원</div>
 
             {/* 가입금액 */}
             <div 
@@ -216,12 +300,22 @@ export default function Page06_FundJoin({ onBack, onNext }) {
 
       {showConsult && <ConsultSheet onClose={() => setShowConsult(false)} />}
 
-      {!showVoice && !showKeypad && (
+      {showAIWarning && (
+        <AIWarningDialog
+          fund={fund}
+          investAmount={numericAmount}
+          onConfirm={handleAIConfirm}
+          onCancel={handleAICancel}
+        />
+      )}
+
+      {!showVoice && !showKeypad && !showAIWarning && (
         <button className="voice-fab" onClick={() => setShowVoice(true)}>🔊</button>
       )}
-      {showVoice && !showKeypad && (
+      {showVoice && !showKeypad && !showAIWarning && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={() => {}}
         />

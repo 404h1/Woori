@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
+import { getFundById } from '../data/funds';
 
-const SCRIPT = '마지막 단계예요. 8개 질문인데 대부분 예로 답하시면 돼요. 대출 강요 질문만 자발적 의사로 가입함 선택하세요. 다 고르면 아래 다음 버튼 눌러주세요.';
+const SCRIPT = '해피콜이에요. 가입한 상품의 위험성, 설명서 확인 여부, 가입 강요 여부를 본인이 실제로 어떻게 인지하고 가입했는지 확인하는 단계예요. 8개 질문을 하나씩 읽어보시고, 본인이 직접 느낀 대로 답해주세요.';
+const AUDIO  = `${import.meta.env.BASE_URL}audio/page08.mp3`;
 
 const QUESTIONS = [
   {
@@ -39,10 +41,11 @@ const QUESTIONS = [
   }
 ];
 
-export default function Page08_HappyCall({ onClose, onDone }) {
+export default function Page08_HappyCall({ fundId = 3, investAmount = 0, onClose, onDone }) {
   const [answered, setAnswered] = useState(false);
   const [answers, setAnswers] = useState(Array(QUESTIONS.length).fill(null));
   const [showVoice, setShowVoice] = useState(true);
+  const fund = getFundById(fundId);
 
   const handleSelect = (qIndex, option) => {
     const newAnswers = [...answers];
@@ -77,8 +80,14 @@ export default function Page08_HappyCall({ onClose, onDone }) {
               </div>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0' }}>
                 <span style={{ fontSize: 14, color: '#888' }}>상품명</span>
-                <span style={{ fontSize: 13, color: '#111', fontWeight: 600, textAlign: 'right' }}>우리삼성그룹증권자투자신탁1호[주식]A-e</span>
+                <span style={{ fontSize: 13, color: '#111', fontWeight: 600, textAlign: 'right', maxWidth: '60%' }}>{fund.name}</span>
               </div>
+              {investAmount > 0 && (
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '12px 0', borderTop: '1px solid #f0f2f5' }}>
+                  <span style={{ fontSize: 14, color: '#888' }}>가입금액</span>
+                  <span style={{ fontSize: 13, color: '#111', fontWeight: 600 }}>{investAmount.toLocaleString()}원</span>
+                </div>
+              )}
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: 40 }}>
@@ -157,6 +166,7 @@ export default function Page08_HappyCall({ onClose, onDone }) {
       {!answered && showVoice && (
         <VoiceGuide
           script={SCRIPT}
+          audio={AUDIO}
           onClose={() => setShowVoice(false)}
           onCommand={() => {}}
         />
