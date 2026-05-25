@@ -11,7 +11,7 @@ export default function Page00b_AIChat({ onFundSelect, onBack }) {
       content: (
         <>
           <h2 style={{ fontSize: 24, fontWeight: 800, color: '#111', lineHeight: 1.4, margin: '0 0 16px 0' }}>
-            이혜원 고객님, 안녕하세요.<br />
+            김우리 고객님, 안녕하세요.<br />
             우리은행 WON AI 뱅커입니다.
           </h2>
           <p style={{ fontSize: 16, color: '#333', margin: '0 0 16px 0', fontWeight: 600 }}>

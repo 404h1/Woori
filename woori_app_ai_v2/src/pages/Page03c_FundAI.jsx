@@ -4,7 +4,7 @@ import VoiceGuide from '../components/VoiceGuide';
 import { getFundById } from '../data/funds';
 import { Icon } from '../components/Icons';
 
-const SCRIPT = '이 펀드는 엔비디아, TSMC 같은 글로벌 AI 반도체 기업에 투자해요. 최근 3개월 수익률이 +46%라는 건, 같은 폭으로 떨어질 수도 있다는 뜻이에요. 환매수수료가 있어서 중간에 빼면 손실이 생길 수 있고, 해외 주식이라 환율에 따라 추가 손익도 발생해요. 장점, 주의, 적합한 분 탭을 하나씩 읽어보시고 본인에게 맞는지 직접 판단해주세요.';
+const SCRIPT = '이 펀드는 엔비디아, TSMC 같은 글로벌 AI 반도체 기업에 투자해요. 최근 3개월 수익률 +46%는 같은 폭으로 떨어질 수도 있다는 뜻이에요. 김우리님은 72세 은퇴교사이시고 첫 펀드 가입이시니까, 노후자금 8,000만원 중 의료비·생활비 6,000만원은 꼭 비상금으로 두시고 권장 800만원 정도로 시작하시길 권해드려요. 환매수수료와 해외 주식 환율 영향도 꼭 확인해주세요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page03c.mp3`;
 
 export default function Page03c_FundAI({ fundId = 3, onBack, onJoin }) {
@@ -93,15 +93,15 @@ export default function Page03c_FundAI({ fundId = 3, onBack, onJoin }) {
             <div style={{ background: '#1b64da', padding: '12px 16px' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <Icon name="chat" size={16} color="#fff" />
-                <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>이혜원 고객님 맞춤 조언</span>
+                <span style={{ fontSize: 14, fontWeight: 700, color: '#fff' }}>김우리 고객님 맞춤 조언</span>
               </div>
-              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>마이데이터 연동 · 최근 6개월 거래 내역 기반 분석</div>
+              <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.8)', marginTop: 4 }}>마이데이터 연동 · 우리은행 30년 거래 내역 기반 분석</div>
             </div>
 
             <div style={{ padding: '16px' }}>
               {[
-                { label: '월 여유자금', value: `${adv.freeFund.toLocaleString()}원`, color: '#111' },
-                { label: '권장 비상금', value: `- ${adv.emergency.toLocaleString()}원`, color: '#dc2626' },
+                { label: '노후자금 총액', value: `${adv.freeFund.toLocaleString()}원`, color: '#111' },
+                { label: '권장 비상금 (의료비·생활비)', value: `- ${adv.emergency.toLocaleString()}원`, color: '#dc2626' },
               ].map(({ label, value, color }) => (
                 <div key={label} style={{ display: 'flex', justifyContent: 'space-between', padding: '8px 0', borderBottom: '1px solid #f0f2f5' }}>
                   <span style={{ fontSize: 14, color: '#666' }}>{label}</span>
@@ -109,7 +109,7 @@ export default function Page03c_FundAI({ fundId = 3, onBack, onJoin }) {
                 </div>
               ))}
               <div style={{ display: 'flex', justifyContent: 'space-between', padding: '10px 0', marginBottom: 12 }}>
-                <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>추천 투자금액</span>
+                <span style={{ fontSize: 15, fontWeight: 700, color: '#111' }}>추천 첫 투자금액</span>
                 <span style={{ fontSize: 15, fontWeight: 800, color: '#1b64da', display: 'flex', alignItems: 'center', gap: 4 }}>{adv.recommended.toLocaleString()}원 <Icon name="check-circle" size={16} color="#16a34a" /></span>
               </div>
 

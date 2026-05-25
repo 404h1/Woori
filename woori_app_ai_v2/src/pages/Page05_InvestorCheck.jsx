@@ -4,7 +4,7 @@ import VoiceGuide from '../components/VoiceGuide';
 import { Icon } from '../components/Icons';
 import botImg from '../assets/bot.png';
 
-const SCRIPT = '가입 전 두 가지를 확인하는 단계예요. 첫 번째는 최근 1개월 안에 대출을 받으셨거나 받을 예정인지, 두 번째는 증권사에서 확인받은 전문 금융소비자인지 묻는 거예요. 본인 상황을 떠올려보시고 직접 답해주세요.';
+const SCRIPT = '김우리 고객님, 가입 전 두 가지를 확인하는 단계예요. 첫 번째는 최근 1개월 안에 대출을 받으셨거나 받을 예정인지, 두 번째는 증권사에서 확인받은 전문 금융소비자이신지 묻는 거예요. 노후자금 보호를 위해 본인 상황을 떠올려보시고 직접 답해주세요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page05.mp3`;
 
 export default function Page05_InvestorCheck({ onClose }) {
@@ -35,7 +35,7 @@ export default function Page05_InvestorCheck({ onClose }) {
         <div style={{ display: 'flex', gap: 12, marginBottom: 20 }}>
           <img src={botImg} alt="bot" style={{ width: 44, height: 44, borderRadius: '50%', flexShrink: 0 }} />
           <div style={{ background: '#f2f4f6', borderRadius: '4px 16px 16px 16px', padding: '14px 16px', fontSize: 14, color: '#222', lineHeight: 1.6 }}>
-            이혜원 고객님, 안녕하세요.<br />
+            김우리 고객님, 안녕하세요.<br />
             투자 상품에 가입하기 위해 아래 질문에<br />
             답해주세요.
           </div>

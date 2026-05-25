@@ -14,8 +14,9 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
   const [answers, setAnswers] = useState([]); // ['proceed' | 'rethink', ...]
 
   const adv = fund.customAdvice;
-  const overFreeFund = investAmount > (adv.freeFund - adv.emergency);
+  const overRecommended = investAmount > adv.recommended;
   const concentrationPct = ((investAmount / adv.freeFund) * 100).toFixed(0);
+  const recRatio = (investAmount / adv.recommended).toFixed(1);
 
   // 펀드별 손실 시나리오 (역사적 최악)
   const worstYear = fund.region === '글로벌' ? '2022년 미국 긴축기' : '2022년';
@@ -25,23 +26,25 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
   const warnings = [
     {
       icon: 'money-loss',
-      title: '유동성 경고',
-      message: overFreeFund
-        ? `이혜원님 비상금은 ${adv.emergency.toLocaleString()}원으로 추천드렸어요. 지금 입력하신 ${investAmount.toLocaleString()}원은 권장 투자금(${adv.recommended.toLocaleString()}원)을 초과해요. 갑자기 의료비·생활비가 필요할 때 이 펀드는 환매까지 3영업일이 걸려요.`
-        : `이 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 수수료 70%가 발생해요. 갑자기 돈이 필요해도 즉시 현금화가 어렵습니다.`,
-      question: '예상치 못한 지출이 생겨도 ' + (overFreeFund ? '이 금액을 ' : '') + '3개월 이상 묶어둘 수 있으세요?',
+      title: '유동성·노후자금 경고',
+      message: overRecommended
+        ? `김우리님 노후자금 8,000만원 중 의료비·생활비 ${adv.emergency.toLocaleString()}원은 꼭 비상금으로 두시도록 권해드렸어요. 지금 입력하신 ${investAmount.toLocaleString()}원은 권장 첫 투자금(${adv.recommended.toLocaleString()}원)의 ${recRatio}배예요. 이 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 이익금의 70%가 수수료로 빠져요. 72세시라 갑자기 의료비가 필요해도 즉시 현금화가 어려워요.`
+        : `이 펀드는 환매까지 3영업일 + 3개월 미만 환매 시 이익금의 70%가 수수료로 빠져요. 노후자금이라 갑자기 돈이 필요해도 즉시 현금화가 어려워요.`,
+      question: overRecommended
+        ? '예상치 못한 의료비·생활비가 생겨도 이 금액을 3개월 이상 묶어둘 수 있으세요?'
+        : '예상치 못한 의료비가 생겨도 3개월 이상 묶어둘 수 있으세요?',
     },
     {
       icon: 'chart-down',
-      title: '변동성 시뮬레이션',
-      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 만약 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원).`,
-      question: '이 손실이 실제로 났을 때 후회하지 않으실 자신 있으세요?',
+      title: '변동성·회복 시뮬레이션',
+      message: `최근 3개월 ${fund.return3m}이지만, ${worstYear}에는 ${worstLoss}% 손실 사례가 있어요. 같은 상황이 오면 ${investAmount.toLocaleString()}원이 ${lossAmount.toLocaleString()}원이 됩니다 (-${(investAmount - lossAmount).toLocaleString()}원). 김우리님은 72세 은퇴교사이시라 손실이 나도 다시 모으실 기간이 짧고, 노후 생활자금은 회복이 어려워요.`,
+      question: '이 손실이 노후에 실제로 났을 때 후회하지 않으실 자신 있으세요?',
     },
     {
       icon: 'target',
-      title: '집중도 경고',
-      message: `이혜원님 월 여유자금 ${adv.freeFund.toLocaleString()}원 중 ${concentrationPct}%를 이 한 펀드에 넣으시는 거예요. ${fund.region === '글로벌' ? '게다가 해외 주식이라 환율 변동까지 추가로 영향을 받아요.' : '한 산업에 집중되면 그 업황 악화 시 분산 효과가 사라져요.'} 분산 투자를 추천드립니다.`,
-      question: '그래도 이 펀드 하나에 집중해서 진행하시겠어요?',
+      title: '집중도·첫 펀드 경고',
+      message: `김우리님 노후자금 8,000만원 중 ${concentrationPct}%를 이 한 펀드에 넣으시는 거예요. 게다가 첫 펀드 가입이시고, ${fund.region === '글로벌' ? '글로벌 AI 반도체라는 한 산업이라 변동성이 크고, 해외 주식이라 환율 변동까지 추가로 받아요.' : '한 산업에 집중되면 그 업황 악화 시 분산 효과가 사라져요.'} 처음이시면 권장 ${adv.recommended.toLocaleString()}원으로 감 잡으시는 걸 권해드려요.`,
+      question: `그래도 ${investAmount.toLocaleString()}원 그대로 진행하시겠어요?`,
     },
   ];
 
@@ -115,8 +118,8 @@ export default function AIWarningDialog({ fund, investAmount, onConfirm, onCance
           {stage >= 1 && (
             <BotMessage delay={0}>
               <div style={{ fontSize: 14, color: '#111', lineHeight: 1.6 }}>
-                <strong>이혜원 고객님,</strong> 가입 전에 3가지만 확인할게요.<br />
-                마이데이터로 분석한 결과, <strong style={{ color: '#dc2626' }}>주의해야 할 점</strong>이 있어요.
+                <strong>김우리 고객님,</strong> 첫 펀드 가입이시니까 가입 전에 3가지만 꼭 확인할게요.<br />
+                마이데이터로 분석한 결과, <strong style={{ color: '#dc2626' }}>노후자금 보호를 위해 주의해야 할 점</strong>이 있어요.
               </div>
             </BotMessage>
           )}

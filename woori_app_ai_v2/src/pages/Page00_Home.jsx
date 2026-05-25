@@ -80,17 +80,17 @@ export default function Page00_Home({ onStart }) {
                   <div style={{ width: 24, height: 24, borderRadius: '50%', background: 'linear-gradient(135deg, #0052cc 0%, #3388ff 100%)' }} />
                 </div>
                 <div>
-                  <div style={{ fontSize: 16, fontWeight: 700, color: '#111', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>WON 통장 <span style={{ color: '#ccc', fontSize: 16 }}>⋮</span></div>
-                  <div style={{ fontSize: 13, color: '#888' }}>우리</div>
+                  <div style={{ fontSize: 16, fontWeight: 700, color: '#111', marginBottom: 4, display: 'flex', alignItems: 'center', gap: 6 }}>노후자금 통장 <span style={{ color: '#ccc', fontSize: 16 }}>⋮</span></div>
+                  <div style={{ fontSize: 13, color: '#888' }}>우리 · 30년 단골</div>
                 </div>
               </div>
               <span style={{ color: '#ccc', fontSize: 20 }}>⧉</span>
             </div>
-            
-            <div style={{ display: 'inline-block', background: '#f5f5f5', padding: '4px 8px', borderRadius: 6, fontSize: 12, color: '#666', marginBottom: 12 }}>한도제한</div>
-            
+
+            <div style={{ display: 'inline-block', background: '#f5f5f5', padding: '4px 8px', borderRadius: 6, fontSize: 12, color: '#666', marginBottom: 12 }}>입출금자유</div>
+
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
-              <div style={{ fontSize: 24, fontWeight: 800, color: '#111' }}>1원</div>
+              <div style={{ fontSize: 24, fontWeight: 800, color: '#111' }}>80,000,001원</div>
               <button style={{ background: '#f8f8f8', border: '1px solid #eee', padding: '10px 20px', borderRadius: 20, fontSize: 14, fontWeight: 600, color: '#333' }}>이체</button>
             </div>
           </div>

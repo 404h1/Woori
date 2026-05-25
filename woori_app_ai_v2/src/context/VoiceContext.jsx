@@ -2,7 +2,7 @@ import { createContext, useContext, useRef, useState, useCallback, useEffect } f
 
 const VoiceCtx = createContext(null);
 
-// mp3 존재 여부 캐시 — 같은 URL을 두 번 fetch 안 함
+// mp3 존재 여부 캐시 — 같은 URL을 두 번 HEAD 안 함
 const mp3ExistsCache = new Map();
 
 async function mp3Exists(url) {
@@ -26,7 +26,7 @@ export function VoiceProvider({ children }) {
 
   const audioRef       = useRef(null);
   const intervalRef    = useRef(null);
-  const fallbackFiredRef = useRef(false); // double-fire 방지
+  const fallbackFiredRef = useRef(false);
 
   const clearInterval_ = () => {
     if (intervalRef.current) {
@@ -37,7 +37,6 @@ export function VoiceProvider({ children }) {
 
   const stopAudio = () => {
     if (audioRef.current) {
-      // 이벤트 핸들러 제거하여 onerror/onended가 stop 도중 다시 fire 안 되게
       audioRef.current.onerror = null;
       audioRef.current.onended = null;
       audioRef.current.onplay = null;
@@ -53,7 +52,7 @@ export function VoiceProvider({ children }) {
     if (window.speechSynthesis) window.speechSynthesis.cancel();
   };
 
-  // 기존 Web Speech API TTS
+  // 비상용 Web Speech API — 정적 mp3가 없을 때만
   const speakTTS = useCallback((text) => {
     if (!window.speechSynthesis) return;
     window.speechSynthesis.cancel();
@@ -94,13 +93,12 @@ export function VoiceProvider({ children }) {
     }
   }, []);
 
-  // mp3 재생 (사전 체크 + fallback)
+  // 정적 mp3 재생 + 단어 하이라이트
   const speakAudio = useCallback(async (text, audioUrl) => {
     stopAudio();
     stopTTS();
     fallbackFiredRef.current = false;
 
-    // mp3 사전 존재 체크 — 404면 곧장 TTS
     const exists = await mp3Exists(audioUrl);
     if (!exists) {
       speakTTS(text);
@@ -160,7 +158,7 @@ export function VoiceProvider({ children }) {
     }
   }, [speakTTS]);
 
-  // 통합 API
+  // 통합 API — audioUrl 있으면 정적 mp3 시도, 없으면 Web Speech
   const speak = useCallback((text, audioUrl) => {
     if (audioUrl) speakAudio(text, audioUrl);
     else          speakTTS(text);

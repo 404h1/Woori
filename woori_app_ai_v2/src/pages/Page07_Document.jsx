@@ -3,7 +3,7 @@ import StatusBar from '../components/StatusBar';
 import VoiceGuide from '../components/VoiceGuide';
 import { Icon } from '../components/Icons';
 
-const SCRIPT = '상품설명서예요. 원금 손실 가능성, 환매 조건, 청약철회가 가능한 기간이 적혀 있어요. 끝까지 직접 읽어보셔야 가입이 진행돼요. 시간이 걸려도 천천히 보시고, 이해 안 되는 부분은 상담을 요청하세요.';
+const SCRIPT = '상품설명서예요. 원금 손실 가능성, 환매 조건, 청약철회 가능 기간이 적혀 있어요. 김우리 고객님, 첫 펀드 가입이시고 노후자금이라 천천히 끝까지 직접 읽어보셔야 가입이 진행돼요. 이해 안 되는 부분은 1599-0800 우리은행 콜센터로 꼭 상담 요청하세요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page07.mp3`;
 
 export default function Page07_Document({ onClose, onNext }) {

@@ -164,7 +164,7 @@ export default function Page01_InvestorInfo({ onNext }) {
         id: 'init-1',
         type: 'bot',
         avatar: true, // 첫 시작에만 아바타 노출
-        content: '이혜원 고객님, 안녕하세요. 투자 상품에 가입하기 위해 아래 질문에 답해주세요.'
+        content: '김우리 고객님, 안녕하세요. 투자 상품에 가입하기 위해 아래 질문에 답해주세요.'
       },
       {
         id: 'init-2',
@@ -278,7 +278,7 @@ export default function Page01_InvestorInfo({ onNext }) {
         avatar: true,
         content: (
           <>
-            적합한 상품을 알려드리기 위해 이혜원님의 투자성향을 알아볼게요.
+            적합한 상품을 알려드리기 위해 김우리님의 투자성향을 알아볼게요.
             <br />
             <span style={{ fontSize: 13, color: '#8E94A0', display: 'inline-block', marginTop: 6, fontWeight: 'normal' }}>
               ※ 비대면 채널에서 1일 1회 진행 가능합니다.

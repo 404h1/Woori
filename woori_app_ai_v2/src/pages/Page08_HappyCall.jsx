@@ -197,14 +197,14 @@ export default function Page08_HappyCall({
       // 백엔드 오프라인: 기본 위험 데이터 사용
       setRagData({
         risks: [
-          '원금 전액 손실이 가능한 고위험 상품입니다.',
-          '예금자보호 대상이 아닙니다.',
-          '투자 전 상품 위험성을 충분히 검토하시기 바랍니다.',
+          '원금 전액 손실이 가능한 고위험 상품으로, 노후자금이 줄어들 수 있어요.',
+          '예금자보호 대상이 아니에요.',
+          '72세시고 첫 펀드 가입이시니까, 손실 시 회복 기간이 짧다는 점도 꼭 검토하세요.',
         ],
-        summary: `${fund.shortName}은 ${fund.risk} 상품으로 원금 손실 위험이 있습니다.`,
+        summary: `${fund.shortName}은 ${fund.risk} 상품으로 노후자금 손실 위험이 있습니다.`,
         personalized_warning: HIGH_RISK_TYPES.includes(investorType)
-          ? `${investorType} 성향으로 이 상품과 적합한 수준입니다. 단, 원금 손실 가능성은 항상 존재합니다.`
-          : `[주의] ${investorType} 성향보다 이 상품의 위험등급이 높습니다. 원금 손실 가능성을 충분히 인지하시기 바랍니다.`,
+          ? `${investorType} 성향으로 위험등급은 맞지만, 김우리님은 72세 은퇴교사이시고 첫 펀드시라 노후자금 손실 가능성은 항상 신중히 보세요.`
+          : `[주의] ${investorType} 성향보다 이 상품의 위험등급이 높습니다. 김우리님 노후자금 손실 가능성을 충분히 인지하시기 바랍니다.`,
       });
       setPhase('briefing');
     }
@@ -420,15 +420,14 @@ export default function Page08_HappyCall({
   // ── 브리핑 스크립트 생성 ──────────────────────────────────────────────────
   function buildBriefingScript(fund, rag, invType) {
     const riskNote = rag?.risks?.[0] || '원금 손실 가능성이 있는 상품입니다.';
-    const warning = rag?.personalized_warning || '';
     const isHighRisk = HIGH_RISK_TYPES.includes(invType);
     const mismatchLine = !isHighRisk
-      ? ` ${invType}이신 고객님의 성향과 다소 차이가 있을 수 있습니다.`
+      ? ` ${invType}이신 김우리 고객님의 성향과 다소 차이가 있을 수 있습니다.`
       : '';
     return (
-      `고객님, ${fund.shortName}은 ${fund.risk} 상품입니다.${mismatchLine} ` +
+      `김우리 고객님, ${fund.shortName} 펀드는 ${fund.risk} 상품입니다.${mismatchLine} ` +
       `${riskNote} ` +
-      `예금자보호 대상이 아니며, 원금 손실 가능성을 명확히 인지하셨나요? ` +
+      `예금자보호 대상이 아니고, 72세 은퇴교사이시고 첫 펀드 가입이시니까 노후자금 손실 가능성을 충분히 이해하셨는지 확인할게요. ` +
       `이해하셨다면 '네, 이해했습니다'라고 말씀해 주세요.`
     );
   }
