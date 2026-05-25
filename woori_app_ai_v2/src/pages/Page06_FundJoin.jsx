@@ -6,7 +6,7 @@ import { Icon } from '../components/Icons';
 import AIWarningDialog from '../components/AIWarningDialog';
 import { getFundById } from '../data/funds';
 
-const SCRIPT = '가입할 금액을 입력하는 단계예요. 출금가능금액 안에서, 본인이 잃어도 생활에 지장이 없는 금액만 입력해주세요. 한 번 가입하면 매수예정일에 자동으로 빠져나가요.';
+const SCRIPT = '가입할 금액을 입력하는 단계예요. 김우리님은 노후자금 8,000만원 중에서, 잃어도 노후 생활에 지장이 없는 금액만 입력해주세요. 첫 펀드시라면 자산의 10% 이내인 800만원 정도부터 시작하시길 권해드려요. 한 번 가입하시면 매수예정일에 자동으로 빠져나가니까 신중히 정해주세요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page06.mp3`;
 
 export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
@@ -50,10 +50,10 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
 
   const handleQuickAdd = (type) => {
     let current = parseInt(amount || '0', 10);
-    if (type === '+1만') current += 10000;
     if (type === '+10만') current += 100000;
     if (type === '+100만') current += 1000000;
-    if (type === '전액') current = 300001; // 출금가능금액
+    if (type === '+1000만') current += 10000000;
+    if (type === '전액') current = 80000001; // 출금가능금액
     setAmount(current.toString());
   };
 
@@ -110,25 +110,27 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
               {/* 내 자산 시각화 */}
               <div style={{ background: '#fff', borderRadius: 10, padding: '12px 14px', marginBottom: 10, border: '1px solid #e5e7eb' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 10 }}>
-                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>내 자산 vs 투자금</span>
+                  <span style={{ fontSize: 12, color: '#888', fontWeight: 600 }}>노후자금 vs 권장 첫 투자금</span>
                   <span style={{ fontSize: 10, color: '#1b64da', fontWeight: 700, background: '#eef4ff', padding: '2px 6px', borderRadius: 4 }}>마이데이터 기반</span>
                 </div>
                 {(() => {
-                  const total = fund.customAdvice.emergency + fund.customAdvice.recommended;
+                  const total = fund.customAdvice.freeFund;
                   const emerPct = (fund.customAdvice.emergency / total * 100).toFixed(1);
                   const invPct  = (fund.customAdvice.recommended / total * 100).toFixed(1);
+                  const restPct = (100 - parseFloat(emerPct) - parseFloat(invPct)).toFixed(1);
                   return (
                     <>
                       <div style={{ display: 'flex', height: 22, borderRadius: 11, overflow: 'hidden', marginBottom: 10, background: '#f2f4f6' }}>
                         <div style={{ width: `${emerPct}%`, background: '#22c55e', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>비상금</div>
+                        <div style={{ width: `${restPct}%`, background: '#94a3b8', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>여유</div>
                         <div style={{ width: `${invPct}%`, background: '#1b64da', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 10, color: '#fff', fontWeight: 700 }}>투자</div>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 11, color: '#555', marginBottom: 10 }}>
                         <span>비상금 <strong style={{ color: '#16a34a' }}>{fund.customAdvice.emergency.toLocaleString()}원</strong></span>
-                        <span>투자 <strong style={{ color: '#1b64da' }}>{fund.customAdvice.recommended.toLocaleString()}원</strong></span>
+                        <span>권장투자 <strong style={{ color: '#1b64da' }}>{fund.customAdvice.recommended.toLocaleString()}원</strong></span>
                       </div>
                       <div style={{ borderTop: '1px solid #f0f2f5', paddingTop: 10, fontSize: 12, color: '#555', lineHeight: 1.6 }}>
-                        월 여유자금 <strong>{fund.customAdvice.freeFund.toLocaleString()}원</strong> 중 {fund.customAdvice.emergency.toLocaleString()}원은 비상금으로 남기는 것이 안전해요.
+                        노후자금 <strong>{fund.customAdvice.freeFund.toLocaleString()}원</strong> 중 의료비·생활비 {fund.customAdvice.emergency.toLocaleString()}원은 꼭 비상금으로 남기시는 게 안전해요.
                       </div>
                     </>
                   );
@@ -157,13 +159,13 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
               <div>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                   <div style={{ width: 24, height: 24, borderRadius: '50%', background: '#1b64da', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 12, color: '#fff' }}>W</div>
-                  <span style={{ fontWeight: 700, fontSize: 15 }}>WON통장</span>
+                  <span style={{ fontWeight: 700, fontSize: 15 }}>노후자금 통장</span>
                 </div>
                 <div style={{ fontSize: 13, color: '#666' }}>우리 1002-067-468859</div>
               </div>
               <span style={{ color: '#888', fontSize: 18 }}>∨</span>
             </div>
-            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 300,001원</div>
+            <div style={{ textAlign: 'right', fontSize: 13, color: '#1b64da', marginBottom: 24 }}>출금가능금액 80,000,001원</div>
 
             {/* 가입금액 */}
             <div 
@@ -217,7 +219,7 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
             <div style={{ marginBottom: 8 }}>
               <div style={{ fontSize: 15, fontWeight: 700, color: '#222', marginBottom: 16 }}>가입정보</div>
               {[
-                ['매수예약금액', `${amount ? Number(amount).toLocaleString() : '10,000'}원`],
+                ['매수예약금액', `${amount ? Number(amount).toLocaleString() : '20,000,000'}원`],
                 ['매수예정일', '2026.05.22', true],
                 ['출금계좌번호', '우리은행\n100206*******'],
               ].map(([label, value, isRed]) => (
@@ -259,7 +261,7 @@ export default function Page06_FundJoin({ fundId = 3, onBack, onNext }) {
         }}>
           {/* 퀵 추가 버튼 바 */}
           <div style={{ display: 'flex', gap: 8, padding: '12px 16px', background: '#f8fafc', borderBottom: '1px solid #ebecef' }}>
-            {['+1만', '+10만', '+100만', '전액'].map(btn => (
+            {['+10만', '+100만', '+1000만', '전액'].map(btn => (
               <button
                 key={btn}
                 onClick={() => handleQuickAdd(btn)}

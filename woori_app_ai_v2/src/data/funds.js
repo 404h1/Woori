@@ -44,11 +44,11 @@ export const FUNDS = [
       { ok: false, label: '환율 변동을 피하고 싶으신 분 (이미 국내라 환율 영향 X)' },
     ],
     customAdvice: {
-      freeFund: 300000,
-      emergency: 200000,
-      recommended: 100000,
-      message: '국내 펀드라 환율 걱정은 없지만, 변동성은 글로벌 펀드와 비슷해요. 처음 투자니까 비상금 20만원은 남기시고, 10만원으로 시작해보세요.',
-      cta: '10만원으로 바로 가입하기',
+      freeFund: 80000000,
+      emergency: 60000000,
+      recommended: 5000000,
+      message: '국내 반도체 펀드라 환율 걱정은 없지만, 변동성은 글로벌과 비슷해요. 72세시고 첫 펀드이시니까, 노후자금 8,000만원 중 의료비·생활비 6,000만원은 꼭 남기시고 500만원으로 감 잡으세요.',
+      cta: '500만원으로 바로 가입하기',
     },
   },
 
@@ -95,11 +95,11 @@ export const FUNDS = [
       { ok: false, label: '원금 보장이 필요하신 분' },
     ],
     customAdvice: {
-      freeFund: 300000,
-      emergency: 200000,
-      recommended: 100000,
-      message: '처음 투자니까 소액으로 감 잡는 게 맞아요. 25일 급여 들어오시면 비상금 20만원 먼저 빼두시고, 나머지 10만원으로 시작해보세요.',
-      cta: '10만원으로 바로 가입하기',
+      freeFund: 80000000,
+      emergency: 60000000,
+      recommended: 8000000,
+      message: '김우리님은 우리은행 30년 단골이시고 첫 펀드 가입이세요. 노후자금 8,000만원 중 의료비·생활비 6,000만원은 꼭 비상금으로 두시고, 처음에는 자산의 10%인 800만원 정도로 시작하시는 걸 권해드려요. 2,000만원은 첫 펀드로는 부담이 커요.',
+      cta: '800만원으로 바로 가입하기',
     },
   },
 
@@ -145,11 +145,11 @@ export const FUNDS = [
       { ok: false, label: '안정적인 수익을 원하시는 분' },
     ],
     customAdvice: {
-      freeFund: 300000,
-      emergency: 200000,
-      recommended: 80000,
-      message: '수수료가 다른 펀드보다 약간 높아요. 분산 효과는 있지만 단기 수익 기대치는 낮춰주세요. 8만원 정도가 적당합니다.',
-      cta: '8만원으로 바로 가입하기',
+      freeFund: 80000000,
+      emergency: 60000000,
+      recommended: 5000000,
+      message: '수수료가 다른 펀드보다 약간 높아요. 분산 효과는 있지만 72세시고 첫 펀드이시라 단기 수익 기대치는 낮춰주세요. 노후자금 중 500만원 정도가 적당합니다.',
+      cta: '500만원으로 바로 가입하기',
     },
   },
 
@@ -196,11 +196,11 @@ export const FUNDS = [
       { ok: false, label: '특정 그룹 집중을 피하고 싶으신 분' },
     ],
     customAdvice: {
-      freeFund: 300000,
-      emergency: 200000,
-      recommended: 150000,
-      message: '다른 펀드보다 변동성이 낮고 수수료도 저렴해요. 처음 투자라면 이쪽이 더 안전합니다. 15만원 정도 시작 추천드려요.',
-      cta: '15만원으로 바로 가입하기',
+      freeFund: 80000000,
+      emergency: 60000000,
+      recommended: 15000000,
+      message: '다른 펀드보다 변동성이 낮고 수수료도 저렴해요. 첫 펀드라면 이쪽이 노후자금에 더 안전합니다. 1,500만원 정도 시작 권해드려요.',
+      cta: '1,500만원으로 바로 가입하기',
     },
   },
 
@@ -248,11 +248,11 @@ export const FUNDS = [
       { ok: false, label: '낮은 수수료를 원하시는 분' },
     ],
     customAdvice: {
-      freeFund: 300000,
-      emergency: 200000,
-      recommended: 80000,
-      message: '친환경 테마는 장기 우상향이지만 정책 리스크가 큽니다. 비상금 확보 후 8만원 정도 소액 시작 추천드려요.',
-      cta: '8만원으로 바로 가입하기',
+      freeFund: 80000000,
+      emergency: 60000000,
+      recommended: 5000000,
+      message: '친환경 테마는 장기 우상향이지만 정책 리스크가 커요. 72세시고 첫 펀드이시면 노후자금 8,000만원 중 의료비 6,000만원 비상금부터 확보하시고, 500만원 정도 소액 시작 권해드려요.',
+      cta: '500만원으로 바로 가입하기',
     },
   },
 ];
@@ -265,15 +265,11 @@ export function getFundById(id) {
   return FUNDS.find(f => f.id === baseId) || FUNDS[1]; // 기본값: 삼성글로벌반도체
 }
 
-// Page03 목록용 — 원본 9개 ID 유지 (A/C 클래스 구분)
+// Page03 목록용 — 5개 펀드, A클래스(수수료선취)만 노출
 export const FUND_LIST = [
   { ...FUNDS[0], id: 1, fee: '수수료선취' },
-  { ...FUNDS[0], id: 2, fee: '수수료미징구', return3m: '+46.27%' },
   { ...FUNDS[1], id: 3, fee: '수수료선취' },
-  { ...FUNDS[1], id: 4, fee: '수수료미징구', return3m: '+46.47%' },
   { ...FUNDS[2], id: 5, fee: '수수료선취' },
-  { ...FUNDS[2], id: 6, fee: '수수료미징구', return3m: '+44.12%' },
   { ...FUNDS[3], id: 7, fee: '계열사·수수료선취' },
-  { ...FUNDS[3], id: 8, fee: '계열사·수수료미징구', return3m: '+38.78%' },
   { ...FUNDS[4], id: 9, fee: '수수료선취' },
 ];

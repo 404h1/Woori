@@ -4,7 +4,7 @@ import VoiceGuide from '../components/VoiceGuide';
 import { FUND_LIST } from '../data/funds';
 import { Icon } from '../components/Icons';
 
-const SCRIPT = '여기 보이는 펀드는 모두 매우높은위험 등급이에요. 수익률 숫자가 커 보여도, 과거 수익률이 미래를 보장하지는 않아요. 예금자보호 대상이 아니라는 점도 기억하세요. 펀드 이름을 누르면 자세한 내용을 보실 수 있어요.';
+const SCRIPT = '여기 보이는 펀드는 대부분 매우높은위험 등급이에요. 수익률 숫자가 커 보여도, 과거 수익률이 미래를 보장하지는 않아요. 예금자보호 대상이 아니라서 노후자금이 손실될 수도 있다는 점, 꼭 기억해주세요. 김우리님은 첫 펀드시니까 펀드 이름을 누르고 자세한 내용을 차근차근 보세요.';
 const AUDIO  = `${import.meta.env.BASE_URL}audio/page03.mp3`;
 
 export default function Page03_FundList({ investorType = '공격투자형', onFundDetail, onCompare, onBack }) {
